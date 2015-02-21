@@ -1,0 +1,50 @@
+---
+title: "Saber 11 2014"
+author: "Datum"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+rm(list = ls())
+
+library("knitr")
+library("FactoMineR")
+library("magrittr")
+library("dplyr")
+
+opts_chunk$set(include = FALSE)
+
+# options(stringsAsFactors = FALSE)
+```
+
+```{r data}
+load("./data/Saber11.RData")
+```
+
+```{r departamentos}
+municipios_50 <- Saber11 %>%
+  dplyr::select(MUNI_RESIDE) %>%
+  table %>%
+  as.data.frame %>%
+  dplyr::filter(Freq > 50) %>%
+  magrittr::set_names(c("Municipio", "Frecuencia")) %>%
+  .[, "Municipio"] %>%
+  as.character
+
+nuevo_saber_11 <- Saber11 %>% 
+  dplyr::filter(MUNI_RESIDE %in% municipios_50) %>%
+  select(MUNI_RESIDE, DEPA_RESIDE, TOTAL)
+
+factores <- sapply(X = nuevo_saber_11, FUN = is.factor)
+nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
+
+rm(list = ls()[!ls() %in% c("nuevo_saber_11")])
+```
+
+```{r matriz, cache = TRUE}
+ecdf_deptos <- nuevo_saber_11 %$% 
+  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
+
+matriz <- sapply(X = ecdf_deptos, FUN = function(x, y){x(y)},
+                 y = sort(nuevo_saber_11[, "TOTAL"])) %>% t
+```
