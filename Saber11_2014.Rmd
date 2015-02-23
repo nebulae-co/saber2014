@@ -50,7 +50,7 @@ nuevo_saber_11 %$%
 
 ```
 
-```{r ACP}
+```{r ACP, include=TRUE}
 
 nuevo_saber_11 %>%
   dplyr::select(MUNI_RESIDE) %>%
