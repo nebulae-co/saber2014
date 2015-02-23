@@ -28,9 +28,10 @@
 
 - Con esto se tiene el agrupamiento de los municipios.
 
-- Visualización
+- Visualización: La metodología propone como sistema de visualización realizar un ACP sobre la matriz de todos los individuos evaluados en todas las funciones, sin embargo en este caso no es factible.
 
-	* Realizar un ACP sobre la matriz de las evaluaciones de todos los individuos. (No es factible, solucionar)
+  * Construir una matriz cuyas filas corresponden a los municipios y cuyas columnas corresponden a los percentiles. Un valor ij de la matríz corresponde al percentil j del municipio i.
+	* Realizar un ACP sobre la matriz de las evaluaciones de todos los individuos y se grafica mostrando el tamaño del municipio (número de colegios evaluados) y el grupo al que pertenecen usando ggplot2.
 
 
 
