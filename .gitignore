@@ -3,3 +3,4 @@
 data/*.csv
 data/*.gz
 .Rproj.user
+.html
