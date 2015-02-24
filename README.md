@@ -6,7 +6,7 @@ En este pequño repositorio queremos explorar los datos de las pruebas Saber 11 
 A su vez lo usamos como proyecto de entrenamiento y aprendizaje sobre git, GitHuB y algunas cosas de R.
 
 ### Datos: 
-Usamos los resultados a nivel individual de las pruebas Saber 11 para el segundo semestre de 2014. En el subdirectorio `data` hay un script `data.R` que descarga los datos desde [este repositorio](https://github.com/finiterank/saber2014/) gracias a Javier Moreno. 
+Usamos los resultados a nivel individual de las pruebas Saber 11 para el segundo semestre de 2014. En el subdirectorio `data` hay un script `data.R` que descarga los datos desde [este repositorio](https://github.com/finiterank/saber2014/) (gracias a Javier Moreno) y los guarda como `.RData`. 
 
 ### Metodologia (o algunas cosas que queremos hacer): 
 
