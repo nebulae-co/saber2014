@@ -31,7 +31,7 @@ municipios_50 <- Saber11 %>%
   .[, "Municipio"] %>%
   as.character
 
-nuevo_saber_11 <- Saber11 %>% 
+nuevo_saber_11 <- Saber11 %>%
   dplyr::filter(MUNI_RESIDE %in% municipios_50) %>%
   select(MUNI_RESIDE, DEPA_RESIDE, TOTAL)
 
@@ -42,48 +42,42 @@ rm(list = ls()[!ls() %in% c("nuevo_saber_11", "municipios_50")])
 ```
 
 ```{r agrupamiento}
-ecdf_deptos <- nuevo_saber_11 %$% 
+ecdf_deptos <- nuevo_saber_11 %$%
   tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
 
-nuevo_saber_11 %$%
-  range(TOTAL) -> rango
-
+rango <- nuevo_saber_11 %$% range(TOTAL)
 ```
 
 ```{r ACP, include=TRUE}
-
-nuevo_saber_11 %>%
+tamaño <- nuevo_saber_11 %>%
   dplyr::select(MUNI_RESIDE) %>%
   table %>%
   as.data.frame %>%
   magrittr::set_names(c("Municipio", "Frecuencia")) %>%
-  .[, "Frecuencia"] -> tamaño
+  .[, "Frecuencia"]
 
+# puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
+numero_de_columnas <- 101
 
-101 -> numero_de_columnas #puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
+percentiles <- seq(from = 0, to = 1, length.out = numero_de_columnas)
 
-seq(from = 0,to = 1,length.out = numero_de_columnas) ->
-  percentiles
-
-nuevo_saber_11 %$% tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles, simplify = FALSE)  %>% 
+ACP_de_municipios <- nuevo_saber_11 %$%
+  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles,
+         simplify = FALSE)  %>%
   unlist %>%
   matrix(ncol = numero_de_columnas, byrow = TRUE) %>%
-  data.frame(row.names = municipios_50) %>% PCA(graph = FALSE) ->
-  ACP_de_municipios
+  data.frame(row.names = municipios_50) %>%
+  PCA(graph = FALSE)
 
-data.frame(
-coordenadas_en_x = ACP_de_municipios$ind$coord[,1],
-coordenadas_en_y = ACP_de_municipios$ind$coord[,2],
-tamaño = tamaño,
-grupo = 1 #por ahora mientras están los grupos
-) ->
-  RESULTADO
+#por ahora mientras están los grupos
 
+RESULTADO <- data.frame(coordenadas_en_x = ACP_de_municipios$ind$coord[,1],
+                        coordenadas_en_y = ACP_de_municipios$ind$coord[,2],
+                        tamaño = tamaño,
+                        grupo = 1)
 
 qplot(x = coordenadas_en_x, y = coordenadas_en_y, size=tamaño, data=RESULTADO)
-  
 
 #plot(ACP_de_municipios, label="none")
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
-
 ```
