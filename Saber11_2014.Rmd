@@ -62,21 +62,17 @@ numero_de_columnas <- 101
 percentiles <- seq(from = 0, to = 1, length.out = numero_de_columnas)
 
 ACP_de_municipios <- nuevo_saber_11 %$%
-  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles,
-         simplify = FALSE)  %>%
-  unlist %>%
-  matrix(ncol = numero_de_columnas, byrow = TRUE) %>%
-  data.frame(row.names = municipios_50) %>%
+  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles) %>%
+  do.call(what = "rbind", args = .) %>%
   PCA(graph = FALSE)
 
 #por ahora mientras están los grupos
-
-RESULTADO <- data.frame(coordenadas_en_x = ACP_de_municipios$ind$coord[,1],
-                        coordenadas_en_y = ACP_de_municipios$ind$coord[,2],
+RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
+                        y = ACP_de_municipios$ind$coord[, 2],
                         tamaño = tamaño,
                         grupo = 1)
 
-qplot(x = coordenadas_en_x, y = coordenadas_en_y, size=tamaño, data=RESULTADO)
+qplot(x = x, y = y, size = tamaño, data = RESULTADO)
 
 #plot(ACP_de_municipios, label="none")
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
