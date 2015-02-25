@@ -49,6 +49,22 @@ ecdf_deptos <- nuevo_saber_11 %$%
   tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
 
 rango <- nuevo_saber_11 %$% range(TOTAL)
+
+#un dataframe con todas las posibles combinaciones de municipios
+municipios_x_municipios <- municipios_50 %>%
+  expand.grid(., ., stringsAsFactors = FALSE) 
+
+#una función que, dada una fila del dataframe calcula la distancia entre los municipios
+distancia_CV<- function(municipio1_municipio2){ integrate(f = function(x){(ecdf_deptos[[municipio1_municipio2[1,1]]](x) - ecdf_deptos[[municipio1_municipio2[1,2]]](x))^2}, lower = rango[1], upper = rango[2], subdivisions = 10000)}
+
+#ejemplo
+for(i in 1:100){
+  print(distancia_CV(municipios_x_municipios[i,]))
+  }
+
+
+#pero no sé como aplicarla al dataframe
+
 ```
 
 ```{r ACP, include=TRUE}
