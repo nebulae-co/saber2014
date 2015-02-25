@@ -22,14 +22,17 @@ load("./data/Saber11.RData")
 ```
 
 ```{r municipios}
-municipios_50 <- Saber11 %>%
+tabla_municipios_50 <- Saber11 %>%
   dplyr::select(MUNI_RESIDE) %>%
   table %>%
   as.data.frame %>%
   dplyr::filter(Freq > 50) %>%
-  magrittr::set_names(c("Municipio", "Frecuencia")) %>%
-  .[, "Municipio"] %>%
+  magrittr::set_names(c("Municipio", "Frecuencia")) 
+
+municipios_50 <- tabla_municipios_50[, "Municipio"] %>%
   as.character
+
+tamaño <- tabla_municipios_50[, "Frecuencia"]
 
 nuevo_saber_11 <- Saber11 %>%
   dplyr::filter(MUNI_RESIDE %in% municipios_50) %>%
@@ -38,7 +41,7 @@ nuevo_saber_11 <- Saber11 %>%
 factores <- sapply(X = nuevo_saber_11, FUN = is.factor)
 nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 
-rm(list = ls()[!ls() %in% c("nuevo_saber_11", "municipios_50")])
+rm(list = ls()[!ls() %in% c("nuevo_saber_11", "municipios_50", "tamaño")])
 ```
 
 ```{r agrupamiento}
@@ -49,12 +52,6 @@ rango <- nuevo_saber_11 %$% range(TOTAL)
 ```
 
 ```{r ACP, include=TRUE}
-tamaño <- nuevo_saber_11 %>%
-  dplyr::select(MUNI_RESIDE) %>%
-  table %>%
-  as.data.frame %>%
-  magrittr::set_names(c("Municipio", "Frecuencia")) %>%
-  .[, "Frecuencia"]
 
 # puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
 numero_de_columnas <- 101
