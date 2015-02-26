@@ -48,6 +48,7 @@ rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50", "cuantos_municipios
 fun_distance <- function(a, b, ...){
   
   valores <- sort(c(a, b))
+  
   cuantos_valores <- length(valores)
   
   diferencias_en_x <- valores[2:cuantos_valores] - valores[1:(cuantos_valores - 1)]
@@ -55,24 +56,25 @@ fun_distance <- function(a, b, ...){
   diferencias_cuadradas_en_y <- NULL
     
   for(i in 1:(cuantos_valores - 1)){
-  diferencias_cuadradas_en_y[i] <- (mean(valores[i] >= a) - mean(valores[i] >= b))^2
+    diferencias_cuadradas_en_y[i] <- (mean(valores[i] >= a) - mean(valores[i] >= b))^2
   }
   diferencias_en_x %*% diferencias_cuadradas_en_y
+  
 }
 
 
 #partir los totales por municipio
 
-totales_por_municipio <- split(x = nuevo_saber_11$TOTAL, nuevo_saber_11$MUNI_RESIDE)
+totales_por_municipio <- split(x = nuevo_saber_11$TOTAL, f = nuevo_saber_11$MUNI_RESIDE)
 
 # Calcular la matriz de distancias
 cluster_municipios <- municipios_50$MUNI_RESIDE %>% #nombres de los municipios
   expand.grid(.,., stringsAsFactors = FALSE) %>% #municipios x municipios (producto externo) todas las parejas posibles
-  apply(1, function(x){fun_distance(totales_por_municipio[[x[1]]], totales_por_municipio[[x[2]]])}) %>% #aplicar la función de distancias a todas las parejas posibles
+  apply(MARGIN = 1, FUN = function(x){ fun_distance(totales_por_municipio[[x[1]]], totales_por_municipio[[x[2]]])}) %>% #aplicar la función de distancias a todas las parejas posibles
   matrix(nrow = cuantos_municipios, ncol = cuantos_municipios, dimnames = list(municipios_50$MUNI_RESIDE, municipios_50$MUNI_RESIDE)) %>% #meter el resultado en una matriz
   dist %>% #convertirlo a distancia
-  hclust("ward.D") %>% #agruparlo con el método de ward
-  cutree(4) #formar 4 clases
+  hclust(method = "ward.D") %>% #agruparlo con el método de ward
+  cutree(k = 4) #formar 4 clases
 
 ```
 
