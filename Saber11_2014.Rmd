@@ -29,6 +29,9 @@ municipios_50 <- Saber11 %>%
   dplyr::filter(N > 50) %>%
   dplyr::mutate(MUNI_RESIDE = as.character(MUNI_RESIDE))
 
+cuantos_municipios <- municipios_50$MUNI_RESIDE %>%
+  length
+
 nuevo_saber_11 <- Saber11 %>%
   dplyr::filter(MUNI_RESIDE %in% municipios_50$MUNI_RESIDE) %>%
   dplyr::select(MUNI_RESIDE, DEPA_RESIDE, TOTAL)
@@ -40,51 +43,35 @@ rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
 ```{r agrupamiento, cache = TRUE}
-ecdf_deptos <- nuevo_saber_11 %$%
-  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
-
-n <- length(ecdf_deptos)
-
-rango <- nuevo_saber_11 %$% range(TOTAL)
-
 # Funcion de distancia entre funciones para aplicar a las ecdf
 
-fun_distanc <- function(a, b, ...){
+fun_distance <- function(a, b, ...){
   
-  valores <- c(a, b) %>%
-    sort
-  cuantos_valores <- valores %>%
-    length
+  valores <- sort(c(a, b))
+  cuantos_valores <- length(valores)
   
   diferencias_en_x <- valores[2:cuantos_valores] - valores[1:(cuantos_valores - 1)]
 
   diferencias_cuadradas_en_y <- NULL
     
   for(i in 1:(cuantos_valores - 1)){
-  diferencias_cuadradas_en_y[i] <- (mean(valores[i]>=a) - mean(valores[i]>=b))^2
+  diferencias_cuadradas_en_y[i] <- (mean(valores[i] >= a) - mean(valores[i] >= b))^2
   }
   diferencias_en_x %*% diferencias_cuadradas_en_y
 }
 
-# Crear una matriz vacia para poner las distancias
 
-distance_matrix <- matrix(nrow = n, ncol = n,
-                          dimnames = list(names(ecdf_deptos),
-                                          names(ecdf_deptos)))
+#partir los totales por municipio
 
-# La matriz es simetrica y en la diagonal es cero
-# El ciclo rellena la matriz triangular inferior con las distancias
+totales_por_municipio <- split(x = nuevo_saber_11$TOTAL, nuevo_saber_11$MUNI_RESIDE)
 
-for (i in 1:(n - 1)){
-  distance_matrix[(i + 1):n, i] <- vapply(X = ecdf_deptos[(i + 1):n],
-                                          FUN = fun_distance,
-                                          FUN.VALUE = 0,
-                                          h = ecdf_deptos[[i]],
-                                          lower = rango[1],
-                                          upper = rango[2],
-                                          subdivisions = 10000,
-                                          USE.NAMES = FALSE)
-}
+# Calcular la matriz de distancias
+matriz_de_distancias <- municipios_50$MUNI_RESIDE %>% 
+  expand.grid(.,., stringsAsFactors = FALSE) %>%
+  apply(1, function(x){fun_distanc(totales_por_municipio[[x[1]]], totales_por_municipio[[x[2]]])}) %>%
+  matrix(nrow = cuantos_municipios, ncol = cuantos_municipios, dimnames = list(municipios_50$MUNI_RESIDE, municipios_50$MUNI_RESIDE)) %>%
+  dist
+
 ```
 
 ```{r ACP, include=TRUE}
