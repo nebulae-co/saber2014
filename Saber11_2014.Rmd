@@ -49,8 +49,21 @@ rango <- nuevo_saber_11 %$% range(TOTAL)
 
 # Funcion de distancia entre funciones para aplicar a las ecdf
 
-fun_distance <- function(g, h, ...){
-  integrate(f = function(x){(g(x) - h(x))^2}, ...)$value
+fun_distanc <- function(a, b, ...){
+  
+  valores <- c(a, b) %>%
+    sort
+  cuantos_valores <- valores %>%
+    length
+  
+  diferencias_en_x <- valores[2:cuantos_valores] - valores[1:(cuantos_valores - 1)]
+
+  diferencias_cuadradas_en_y <- NULL
+    
+  for(i in 1:(cuantos_valores - 1)){
+  diferencias_cuadradas_en_y[i] <- (mean(valores[i]>=a) - mean(valores[i]>=b))^2
+  }
+  diferencias_en_x %*% diferencias_cuadradas_en_y
 }
 
 # Crear una matriz vacia para poner las distancias
