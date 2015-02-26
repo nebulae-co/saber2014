@@ -26,7 +26,7 @@ load("./data/Saber11.RData")
 municipios_50 <- Saber11 %>%
   dplyr::group_by(MUNI_RESIDE) %>%
   dplyr::summarise(N = n()) %>%
-  dplyr::filter(N > 50 & N < 60) %>%
+  dplyr::filter(N > 50 & N < 70) %>%
   dplyr::mutate(MUNI_RESIDE = as.character(MUNI_RESIDE))
 
 cuantos_municipios <- municipios_50$MUNI_RESIDE %>%
@@ -74,7 +74,12 @@ cluster_municipios <- municipios_50$MUNI_RESIDE %>% #nombres de los municipios
   matrix(nrow = cuantos_municipios, ncol = cuantos_municipios, dimnames = list(municipios_50$MUNI_RESIDE, municipios_50$MUNI_RESIDE)) %>% #meter el resultado en una matriz
   dist %>% #convertirlo a distancia
   hclust(method = "ward.D") %>% #agruparlo con el método de ward
-  cutree(k = 4) #formar 4 clases
+  cutree(k = 4)  %>% #formar 4 clases
+  factor #guardarlas como factor
+
+
+
+
 
 ```
 
@@ -93,7 +98,7 @@ ACP_de_municipios <- nuevo_saber_11 %$%
 RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         y = ACP_de_municipios$ind$coord[, 2],
                         N = municipios_50$N,
-                        grupo = factor(cluster_municipios))
+                        grupo = cluster_municipios)
 
 qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
 
