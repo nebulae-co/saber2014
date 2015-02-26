@@ -12,6 +12,7 @@ library("FactoMineR")
 library("magrittr")
 library("dplyr")
 library("ggplot2")
+
 opts_chunk$set(include = FALSE)
 
 # options(stringsAsFactors = FALSE)
@@ -38,31 +39,42 @@ nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
-```{r agrupamiento}
+```{r agrupamiento, cache = TRUE}
 ecdf_deptos <- nuevo_saber_11 %$%
   tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
 
+n <- length(ecdf_deptos)
+
 rango <- nuevo_saber_11 %$% range(TOTAL)
 
-#un dataframe con todas las posibles combinaciones de municipios
-municipios_x_municipios <- municipios_50$MUNI_RESIDE %>%
-  expand.grid(., ., stringsAsFactors = FALSE)
+# Funcion de distancia entre funciones para aplicar a las ecdf
 
-#una función que, dada una fila del dataframe calcula la distancia entre los municipios
-distancia_CV<- function(municipio1_municipio2){ integrate(f = function(x){(ecdf_deptos[[municipio1_municipio2[1,1]]](x) - ecdf_deptos[[municipio1_municipio2[1,2]]](x))^2}, lower = rango[1], upper = rango[2], subdivisions = 10000)}
+fun_distance <- function(g, h, ...){
+  integrate(f = function(x){(g(x) - h(x))^2}, ...)$value
+}
 
-#ejemplo
-for(i in 1:100){
-  print(distancia_CV(municipios_x_municipios[i,]))
-  }
+# Crear una matriz vacia para poner las distancias
 
+distance_matrix <- matrix(nrow = n, ncol = n,
+                          dimnames = list(names(ecdf_deptos),
+                                          names(ecdf_deptos)))
 
-#pero no sé como aplicarla al dataframe
+# La matriz es simetrica y en la diagonal es cero
+# El ciclo rellena la matriz triangular inferior con las distancias
 
+for (i in 1:(n - 1)){
+  distance_matrix[(i + 1):n, i] <- vapply(X = ecdf_deptos[(i + 1):n],
+                                          FUN = fun_distance,
+                                          FUN.VALUE = 0,
+                                          h = ecdf_deptos[[i]],
+                                          lower = rango[1],
+                                          upper = rango[2],
+                                          subdivisions = 10000,
+                                          USE.NAMES = FALSE)
+}
 ```
 
 ```{r ACP, include=TRUE}
-
 # puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
 numero_de_columnas <- 101
 
