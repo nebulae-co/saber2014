@@ -22,26 +22,20 @@ load("./data/Saber11.RData")
 ```
 
 ```{r municipios}
-tabla_municipios_50 <- Saber11 %>%
-  dplyr::select(MUNI_RESIDE) %>%
-  table %>%
-  as.data.frame %>%
-  dplyr::filter(Freq > 50) %>%
-  magrittr::set_names(c("Municipio", "Frecuencia")) 
-
-municipios_50 <- tabla_municipios_50[, "Municipio"] %>%
-  as.character
-
-tamaño <- tabla_municipios_50[, "Frecuencia"]
+municipios_50 <- Saber11 %>%
+  dplyr::group_by(MUNI_RESIDE) %>%
+  dplyr::summarise(N = n()) %>%
+  dplyr::filter(N > 50) %>%
+  dplyr::mutate(MUNI_RESIDE = as.character(MUNI_RESIDE))
 
 nuevo_saber_11 <- Saber11 %>%
-  dplyr::filter(MUNI_RESIDE %in% municipios_50) %>%
-  select(MUNI_RESIDE, DEPA_RESIDE, TOTAL)
+  dplyr::filter(MUNI_RESIDE %in% municipios_50$MUNI_RESIDE) %>%
+  dplyr::select(MUNI_RESIDE, DEPA_RESIDE, TOTAL)
 
 factores <- sapply(X = nuevo_saber_11, FUN = is.factor)
 nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 
-rm(list = ls()[!ls() %in% c("nuevo_saber_11", "municipios_50", "tamaño")])
+rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
 ```{r agrupamiento}
@@ -51,8 +45,8 @@ ecdf_deptos <- nuevo_saber_11 %$%
 rango <- nuevo_saber_11 %$% range(TOTAL)
 
 #un dataframe con todas las posibles combinaciones de municipios
-municipios_x_municipios <- municipios_50 %>%
-  expand.grid(., ., stringsAsFactors = FALSE) 
+municipios_x_municipios <- municipios_50$MUNI_RESIDE %>%
+  expand.grid(., ., stringsAsFactors = FALSE)
 
 #una función que, dada una fila del dataframe calcula la distancia entre los municipios
 distancia_CV<- function(municipio1_municipio2){ integrate(f = function(x){(ecdf_deptos[[municipio1_municipio2[1,1]]](x) - ecdf_deptos[[municipio1_municipio2[1,2]]](x))^2}, lower = rango[1], upper = rango[2], subdivisions = 10000)}
@@ -82,10 +76,10 @@ ACP_de_municipios <- nuevo_saber_11 %$%
 #por ahora mientras están los grupos
 RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         y = ACP_de_municipios$ind$coord[, 2],
-                        tamaño = tamaño,
+                        N = municipios_50$N,
                         grupo = 1)
 
-qplot(x = x, y = y, size = tamaño, data = RESULTADO)
+qplot(x = x, y = y, size = N, data = RESULTADO)
 
 #plot(ACP_de_municipios, label="none")
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
