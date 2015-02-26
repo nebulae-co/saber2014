@@ -26,7 +26,7 @@ load("./data/Saber11.RData")
 municipios_50 <- Saber11 %>%
   dplyr::group_by(MUNI_RESIDE) %>%
   dplyr::summarise(N = n()) %>%
-  dplyr::filter(N > 50) %>%
+  dplyr::filter(N > 50 & N < 60) %>%
   dplyr::mutate(MUNI_RESIDE = as.character(MUNI_RESIDE))
 
 cuantos_municipios <- municipios_50$MUNI_RESIDE %>%
@@ -39,7 +39,7 @@ nuevo_saber_11 <- Saber11 %>%
 factores <- sapply(X = nuevo_saber_11, FUN = is.factor)
 nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 
-rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
+rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50", "cuantos_municipios")))
 ```
 
 ```{r agrupamiento, cache = TRUE}
@@ -66,11 +66,13 @@ fun_distance <- function(a, b, ...){
 totales_por_municipio <- split(x = nuevo_saber_11$TOTAL, nuevo_saber_11$MUNI_RESIDE)
 
 # Calcular la matriz de distancias
-matriz_de_distancias <- municipios_50$MUNI_RESIDE %>% 
-  expand.grid(.,., stringsAsFactors = FALSE) %>%
-  apply(1, function(x){fun_distanc(totales_por_municipio[[x[1]]], totales_por_municipio[[x[2]]])}) %>%
-  matrix(nrow = cuantos_municipios, ncol = cuantos_municipios, dimnames = list(municipios_50$MUNI_RESIDE, municipios_50$MUNI_RESIDE)) %>%
-  dist
+cluster_municipios <- municipios_50$MUNI_RESIDE %>% #nombres de los municipios
+  expand.grid(.,., stringsAsFactors = FALSE) %>% #municipios x municipios (producto externo) todas las parejas posibles
+  apply(1, function(x){fun_distance(totales_por_municipio[[x[1]]], totales_por_municipio[[x[2]]])}) %>% #aplicar la función de distancias a todas las parejas posibles
+  matrix(nrow = cuantos_municipios, ncol = cuantos_municipios, dimnames = list(municipios_50$MUNI_RESIDE, municipios_50$MUNI_RESIDE)) %>% #meter el resultado en una matriz
+  dist %>% #convertirlo a distancia
+  hclust("ward.D") %>% #agruparlo con el método de ward
+  cutree(4) #formar 4 clases
 
 ```
 
@@ -83,15 +85,15 @@ percentiles <- seq(from = 0, to = 1, length.out = numero_de_columnas)
 ACP_de_municipios <- nuevo_saber_11 %$%
   tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles) %>%
   do.call(what = "rbind", args = .) %>%
-  PCA(graph = FALSE)
+  FactoMineR::PCA(graph = FALSE)
 
 #por ahora mientras están los grupos
 RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         y = ACP_de_municipios$ind$coord[, 2],
                         N = municipios_50$N,
-                        grupo = 1)
+                        grupo = factor(cluster_municipios))
 
-qplot(x = x, y = y, size = N, data = RESULTADO)
+qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
 
 #plot(ACP_de_municipios, label="none")
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
