@@ -70,7 +70,7 @@ cluster_municipios <- municipios_50$MUNI_RESIDE %>%
                        totales_por_municipio[[x[2]]])}) %>% 
   matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
          dimnames = list(municipios_50$MUNI_RESIDE, municipios_50$MUNI_RESIDE)) %>% 
-  dist %>% # Convertirlo a distancia
+  as.dist %>% # Convertirlo a distancia
   hclust(method = "ward.D") %>% # Agruparlo con el método de ward
   cutree(k = 4)  %>%
   factor
