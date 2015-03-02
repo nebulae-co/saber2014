@@ -41,7 +41,6 @@ rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 # Funcion de distancia entre vectores para aplicar a los totales de los municipios
 
 fun_distance <- function(a, b, ...){
-  
   valores <- sort(c(a, b))
   n <- length(valores)
   diff_x <- diff(valores)
@@ -58,19 +57,17 @@ fun_distance <- function(a, b, ...){
 
 # Partir los totales por municipio
 
-totales_por_municipio <- nuevo_saber_11 %$% split(x = TOTAL, f = MUNI_RESIDE)
+totales <- nuevo_saber_11 %$% split(x = TOTAL, f = MUNI_RESIDE)
 
 # Calcular la matriz de distancias
 
-cluster_municipios <- municipios_50$MUNI_RESIDE %>%
-  expand.grid(., ., stringsAsFactors = FALSE) %>%
-  apply(MARGIN = 1, 
-        FUN = function(x){
-          fun_distance(totales_por_municipio[[x[1]]],
-                       totales_por_municipio[[x[2]]])}) %>% 
-  matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
-         dimnames = list(municipios_50$MUNI_RESIDE, municipios_50$MUNI_RESIDE)) %>% 
-  as.dist %>% # Convertirlo a distancia
+dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
+                      dimnames = list(names(totales), names(totales)))
+
+dist_matrix[lower.tri(dist_matrix)] <- totales %>%
+  combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
+
+cluster_municipios <- (dist_matrix %<>%  as.dist) %>%
   hclust(method = "ward.D") %>% # Agruparlo con el método de ward
   cutree(k = 4)  %>%
   factor
