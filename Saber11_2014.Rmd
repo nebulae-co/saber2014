@@ -47,12 +47,12 @@ fun_distance <- function(a, b, ...){
 
   diff_2_y <- sapply(X = 1:(n-1),
                      FUN = function(x, v, a, b){
-                       (mean(v[x] >= a) - mean(v[x] >= b))^2 
+                       abs(mean(v[x] >= a) - mean(v[x] >= b)) 
                      },
                      v = valores, a = a, b = b,
                      USE.NAMES = FALSE)
   
-  drop(diff_x %*% diff_2_y)
+  drop(diff_x %*% diff_2_y)^2
 }
 
 # Partir los totales por municipio
