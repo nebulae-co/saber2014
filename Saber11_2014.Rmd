@@ -13,7 +13,11 @@ library("magrittr")
 library("dplyr")
 library("ggplot2")
 
-opts_chunk$set(include = FALSE)
+opts_chunk$set(echo = FALSE, 
+               results = "hide",
+               warning = FALSE, 
+               fig.path = "./Figures/", 
+               fig.keep = "last")
 ```
 
 ```{r data}
@@ -73,7 +77,7 @@ cluster_municipios <- (dist_matrix %<>%  as.dist) %>%
   factor
 ```
 
-```{r ACP, include=TRUE}
+```{r ACP}
 # puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
 numero_de_columnas <- 101
 
