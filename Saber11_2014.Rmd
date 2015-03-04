@@ -53,7 +53,8 @@ percentiles <- seq(from = 0, to = 1, length.out = numero_de_columnas)
 
 ernesto <- nuevo_saber_11 %$%
   tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles) %>%
-  do.call(what = "rbind", args = .)
+  do.call(what = "rbind", args = .) %>%
+  as.data.frame
 
 ```
 
@@ -125,8 +126,8 @@ dist_matrix[lower.tri(dist_matrix)] <- totales %>%
 ```{r agrupamiento, cache = TRUE}
 clustering_municipios <- dist_matrix %>%
   hclust(method = "ward.D") # Agruparlo con el método de ward
-grupos_municipios <- clustering_municipios %>% cutree(k = 4)  %>%
-  factor
+grupos_municipios <- clustering_municipios %>% cutree(k = 5)  %>%
+  factor(levels = c(2, 1, 4, 5, 3), labels=c("Pionero", "Suficiente", "Regular", "insuficiente", "Prioritario"))
 ```
 
 ```{r ACP}
@@ -139,7 +140,7 @@ RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         grupo = grupos_municipios)
 
 qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
-
+ggsave("ACP_municipios_grupos.png")
 #plot(ACP_de_municipios, label="none")
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
 ```
