@@ -28,7 +28,7 @@ load("./data/Saber11.RData")
 municipios_50 <- Saber11 %>%
   dplyr::group_by(MUNI_RESIDE) %>%
   dplyr::summarise(N = n()) %>%
-  dplyr::filter(N > 50 & N < 70) %>%
+  dplyr::filter(N > 50) %>%
   dplyr::mutate(MUNI_RESIDE = as.character(MUNI_RESIDE))
 
 nuevo_saber_11 <- Saber11 %>%
@@ -41,7 +41,54 @@ nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
-```{r agrupamiento, cache = TRUE}
+
+
+
+```{r ernesto_muchos_datos}
+
+# puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
+numero_de_columnas <- 101
+
+percentiles <- seq(from = 0, to = 1, length.out = numero_de_columnas)
+
+ernesto <- nuevo_saber_11 %$%
+  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles) %>%
+  do.call(what = "rbind", args = .)
+
+```
+
+
+```{r ernesto_pocos_datos}
+#falta optimizar, de hecho lo saqué del código primigenio
+
+cuantos_municipios <- municipios_50 %$% N %>% length
+cuantos_muchachos <- nuevo_saber_11 %$% TOTAL %>% length
+
+totales_ordenados<-nuevo_saber_11 %$% TOTAL %>%
+  sort
+
+ernesto<-matrix(nrow = cuantos_municipios, ncol = cuantos_muchachos)
+
+for(i in 1:cuantos_municipios){
+for(j in 1: cuantos_muchachos){
+ernesto[i, j] <- totales_ordenados[j] >= nuevo_saber_11$TOTAL[which(nuevo_saber_11$MUNI_RESIDE==municipios_50$MUNI_RESIDE[i])] %>%
+  mean
+}
+}
+
+ernesto %<>% as.data.frame 
+  
+```
+
+
+```{r distancias_muchos_datos}
+
+dist_matrix <- dist(ernesto)
+
+```
+
+
+```{r distancias_pocos_datos}
 # Funcion de distancia entre vectores para aplicar a los totales de los municipios
 
 fun_distance <- function(a, b, ...){
@@ -69,30 +116,27 @@ dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
                       dimnames = list(names(totales), names(totales)))
 
 dist_matrix[lower.tri(dist_matrix)] <- totales %>%
-  combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
+  combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])}) %>%
+  as.dist
 
-clustering_municipios <- (dist_matrix %<>%  as.dist) %>%
+```
+
+
+```{r agrupamiento, cache = TRUE}
+clustering_municipios <- dist_matrix %>%
   hclust(method = "ward.D") # Agruparlo con el método de ward
-grupos_municipios <- cluster_municipios %>% cutree(k = 4)  %>%
+grupos_municipios <- clustering_municipios %>% cutree(k = 4)  %>%
   factor
 ```
 
 ```{r ACP}
-# puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
-numero_de_columnas <- 101
-
-percentiles <- seq(from = 0, to = 1, length.out = numero_de_columnas)
-
-ACP_de_municipios <- nuevo_saber_11 %$%
-  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles) %>%
-  do.call(what = "rbind", args = .) %>%
+ACP_de_municipios <- ernesto %>%
   FactoMineR::PCA(graph = FALSE)
 
-#por ahora mientras están los grupos
 RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         y = ACP_de_municipios$ind$coord[, 2],
                         N = municipios_50$N,
-                        grupo = cluster_municipios)
+                        grupo = grupos_municipios)
 
 qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
 
