@@ -22,20 +22,46 @@ Usamos los resultados a nivel individual de las pruebas Saber 11 para el segundo
 
 	* Preselección de grupos de municipios para calcular funciones empiricas. Criterio: al menos $n$ individuos por municipio.
 
-	* Para cada municipio calcular la f.d.a. empirica.
+  * Crear un data.frame (Que se va a llamar ernesto) con una fila por cada municipio (depto)
+  
+    * Caso con pocos datos: 
+      
+      - Para cada municipio calcular la f.d.a. empirica.
+      
+      - Cada fila corresponde a la función empírica evaluada en todos los individuos.
+      
+      - Al final dim(ernesto) = (cuantos municipios, cuantos muchachos)
+      
+    * Caso con muchos datos:
+      
+      - Para cada municipio calcular todos los percentiles
+      
+      - Cada fila corresponde a todos ls percentiles de los municipios.
 
-	* Para cada par de municipios hallar la distancia de Cramer Von Mises entre las f.d.a. empiricas.
+      - Al final dim(ernesto) = (cuantos municipios, 101)
+
+  * Crear una matriz de distancias entre municipios.
+  
+    * Caso con pocos datos:
+    
+      - Se usa la distancia de Cramer - von Mises.
+      
+      - Se encuentra la integral entre las f.d.a empíricas sumando áreas de rectangulos.
+      
+    * Caso con muchos datos:
+    
+      - Se encuentra la distancia euclidiana entre los percentiles: dist(ernesto)
 
 	* A partir de la matriz de distancias se desarrolla un agrupamiento de los municipios con una metodología mixta:
     
     - En primera instacncia se aplica un agrupamiento jerárquico de Ward.
 
-	  - En segunda instancia se implementa un agrupamiento por $k$-medias con definido a partir del paso previo.
-    
     - El resultado se puede ver como un arbol jerarquico y el procedimiento se puede iterar para obtener una clasificacón robusta.
 
-- Visualización: la metodología propone como sistema de visualización realizar un ACP sobre la matriz de todos los individuos evaluados en todas las funciones, sin embargo en este caso no es factible.
-
-  * Construir una matriz cuyas filas corresponden a los municipios y cuyas columnas corresponden a los percentiles. Un valor $(i, j)$ de la matríz corresponde al percentil $j$ del municipio $i$.
+    - En segunda instancia se implementa un agrupamiento por $k$-medias. Para este paso necesitamos a ernesto.
+    
+- Visualización: la metodología propone como sistema de visualización realizar un ACP sobre ernesto.
   
-	* Realizar un ACP sobre la matriz de las evaluaciones de todos los individuos y se grafica mostrando el tamaño del municipio (número de colegios evaluados) y el grupo al que pertenecen.
+	* Realizar un ACP sobre ernesto y se grafica mostrando el tamaño del municipio (número de colegios evaluados) y el grupo al que pertenecen.
+
+- Validación: Hay que realizar pruebas de Krueskall - Wallis Sobre la clasificación.
