@@ -71,9 +71,9 @@ dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
 dist_matrix[lower.tri(dist_matrix)] <- totales %>%
   combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
 
-cluster_municipios <- (dist_matrix %<>%  as.dist) %>%
-  hclust(method = "ward.D") %>% # Agruparlo con el método de ward
-  cutree(k = 4)  %>%
+clustering_municipios <- (dist_matrix %<>%  as.dist) %>%
+  hclust(method = "ward.D") # Agruparlo con el método de ward
+grupos_municipios <- cluster_municipios %>% cutree(k = 4)  %>%
   factor
 ```
 
