@@ -127,7 +127,14 @@ dist_matrix[lower.tri(dist_matrix)] <- totales %>%
 clustering_municipios <- dist_matrix %>%
   hclust(method = "ward.D") # Agruparlo con el método de ward
 grupos_municipios <- clustering_municipios %>% cutree(k = 5)  %>%
-  factor(levels = c(2, 1, 4, 5, 3), labels=c("Pionero", "Suficiente", "Regular", "insuficiente", "Prioritario"))
+  factor(levels = c(2, 1, 4, 5, 3), labels=c("Pionero", "Suficiente", "Regular", "Insuficiente", "Prioritario"))
+
+ggplot(data.frame(grupos_municipios = grupos_municipios), aes(factor(1), fill = grupos_municipios)) +
+  geom_bar(width = 1) + 
+  coord_polar(theta = "y")
+ggsave("pastel_grupos.png", bg = "transparent")
+
+
 ```
 
 ```{r ACP}
