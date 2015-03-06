@@ -41,14 +41,9 @@ nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
-```{r ernesto_muchos_datos}
-# puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
-numero_de_columnas <- 101
-
-percentiles <- seq(from = 0, to = 1, length.out = numero_de_columnas)
-
-ernesto <- nuevo_saber_11 %$%
-  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles) %>%
+```{r percentiles}
+percentiles <- nuevo_saber_11 %$%
+  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = seq(0, 1, 0.1)) %>%
   do.call(what = "rbind", args = .) %>%
   as.data.frame
 ```
