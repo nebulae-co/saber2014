@@ -13,10 +13,10 @@ library("magrittr")
 library("dplyr")
 library("ggplot2")
 
-opts_chunk$set(echo = FALSE, 
+opts_chunk$set(echo = FALSE,
                results = "hide",
-               warning = FALSE, 
-               fig.path = "./Figures/", 
+               warning = FALSE,
+               fig.path = "./Figures/",
                fig.keep = "last")
 ```
 
@@ -41,11 +41,7 @@ nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
-
-
-
 ```{r ernesto_muchos_datos}
-
 # puse 101 columnas, voy a evaluar cada municipio en todos sus percentiles
 numero_de_columnas <- 101
 
@@ -55,9 +51,7 @@ ernesto <- nuevo_saber_11 %$%
   tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = percentiles) %>%
   do.call(what = "rbind", args = .) %>%
   as.data.frame
-
 ```
-
 
 ```{r ernesto_pocos_datos}
 #falta optimizar, de hecho lo saqué del código primigenio
@@ -77,17 +71,12 @@ ernesto[i, j] <- totales_ordenados[j] >= nuevo_saber_11$TOTAL[which(nuevo_saber_
 }
 }
 
-ernesto %<>% as.data.frame 
-  
+ernesto %<>% as.data.frame
 ```
-
 
 ```{r distancias_muchos_datos}
-
 dist_matrix <- dist(ernesto)
-
 ```
-
 
 ```{r distancias_pocos_datos}
 # Funcion de distancia entre vectores para aplicar a los totales de los municipios
@@ -99,11 +88,11 @@ fun_distance <- function(a, b, ...){
 
   diff_2_y <- sapply(X = 1:(n-1),
                      FUN = function(x, v, a, b){
-                       abs(mean(v[x] >= a) - mean(v[x] >= b)) 
+                       abs(mean(v[x] >= a) - mean(v[x] >= b))
                      },
                      v = valores, a = a, b = b,
                      USE.NAMES = FALSE)
-  
+
   drop(diff_x %*% diff_2_y)^2
 }
 
@@ -119,9 +108,7 @@ dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
 dist_matrix[lower.tri(dist_matrix)] <- totales %>%
   combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])}) %>%
   as.dist
-
 ```
-
 
 ```{r agrupamiento, cache = TRUE}
 clustering_municipios <- dist_matrix %>%
@@ -130,11 +117,9 @@ grupos_municipios <- clustering_municipios %>% cutree(k = 5)  %>%
   factor(levels = c(2, 1, 4, 5, 3), labels=c("Pionero", "Suficiente", "Regular", "Insuficiente", "Prioritario"))
 
 ggplot(data.frame(grupos_municipios = grupos_municipios), aes(factor(1), fill = grupos_municipios)) +
-  geom_bar(width = 1) + 
+  geom_bar(width = 1) +
   coord_polar(theta = "y")
 ggsave("pastel_grupos.png", bg = "transparent")
-
-
 ```
 
 ```{r ACP}
