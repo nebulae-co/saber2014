@@ -48,29 +48,19 @@ percentiles <- nuevo_saber_11 %$%
   as.data.frame
 ```
 
-```{r ernesto_pocos_datos}
-#falta optimizar, de hecho lo saqué del código primigenio
+```{r ecdf}
+totales_ordenados <- nuevo_saber_11$TOTAL %>% unique %>% sort
 
-cuantos_municipios <- municipios_50 %$% N %>% length
-cuantos_muchachos <- nuevo_saber_11 %$% TOTAL %>% length
+ecdf_municipios <- nuevo_saber_11 %$%
+  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
 
-totales_ordenados<-nuevo_saber_11 %$% TOTAL %>%
-  sort
-
-ernesto<-matrix(nrow = cuantos_municipios, ncol = cuantos_muchachos)
-
-for(i in 1:cuantos_municipios){
-for(j in 1: cuantos_muchachos){
-ernesto[i, j] <- totales_ordenados[j] >= nuevo_saber_11$TOTAL[which(nuevo_saber_11$MUNI_RESIDE==municipios_50$MUNI_RESIDE[i])] %>%
-  mean
-}
-}
-
-ernesto %<>% as.data.frame
+ecdf <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
+  y = totales_ordenados) %>% t %>% as.data.frame
 ```
 
-```{r distancias_muchos_datos}
-dist_matrix <- dist(ernesto)
+```{r ecdf_distance}
+# Euclidian distance of the evaluated vectors of ecdf's
+dist_matrix <- dist(ecdf)
 ```
 
 ```{r distancias_pocos_datos}
@@ -118,7 +108,7 @@ ggsave("pastel_grupos.png", bg = "transparent")
 ```
 
 ```{r ACP}
-ACP_de_municipios <- ernesto %>%
+ACP_de_municipios <- ecdf %>%
   FactoMineR::PCA(graph = FALSE)
 
 RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
