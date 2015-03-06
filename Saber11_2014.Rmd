@@ -63,11 +63,11 @@ ecdf <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
 dist_matrix <- dist(ecdf)
 ```
 
-```{r distancias_pocos_datos}
+```{r ecdf_cv_distance}
 # Funcion de distancia entre vectores para aplicar a los totales de los municipios
 
 fun_distance <- function(a, b, ...){
-  valores <- sort(c(a, b))
+  valores <- sort(unique(c(a, b)))
   n <- length(valores)
   diff_x <- diff(valores)
 
