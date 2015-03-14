@@ -52,7 +52,7 @@ ecdf_eval <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
   set_colnames(totales_ordenados)
 ```
 
-```{r ecdf_cv_distance, cache = TRUE}
+```{r ecdf_CvM_distance, cache = TRUE}
 # Funcion de distancia entre vectores para aplicar a los totales de los municipios
 
 fun_distance <- function(a, b, ...){
@@ -84,9 +84,11 @@ dist_matrix[lower.tri(dist_matrix)] <- totales %>%
   as.dist
 ```
 
-```{r agrupamiento, cache = TRUE}
+
+```{r agrupamiento}
 clustering_municipios <- dist_matrix %>%
   hclust(method = "ward.D") # Agruparlo con el método de ward
+
 grupos_municipios <- clustering_municipios %>% cutree(k = 5)  %>%
   factor(levels = c(2, 1, 4, 5, 3), labels=c("Pionero", "Suficiente", "Regular", "Insuficiente", "Prioritario"))
 
