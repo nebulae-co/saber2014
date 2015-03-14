@@ -41,26 +41,15 @@ nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
-```{r percentiles}
-percentiles <- nuevo_saber_11 %$%
-  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = quantile, probs = seq(0, 1, 0.1)) %>%
-  do.call(what = "rbind", args = .) %>%
-  as.data.frame
-```
-
 ```{r ecdf}
 totales_ordenados <- nuevo_saber_11$TOTAL %>% unique %>% sort
 
 ecdf_municipios <- nuevo_saber_11 %$%
   tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
 
-ecdf <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
-  y = totales_ordenados) %>% t %>% as.data.frame
-```
-
-```{r ecdf_distance}
-# Euclidian distance of the evaluated vectors of ecdf's
-dist_matrix <- dist(ecdf)
+ecdf_eval <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
+  y = totales_ordenados) %>% t %>% data.frame %>%
+  set_colnames(totales_ordenados)
 ```
 
 ```{r ecdf_cv_distance}
@@ -108,7 +97,7 @@ ggsave("pastel_grupos.png", bg = "transparent")
 ```
 
 ```{r ACP}
-ACP_de_municipios <- ecdf %>%
+ACP_de_municipios <- ecdf_eval %>%
   FactoMineR::PCA(graph = FALSE)
 
 RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
