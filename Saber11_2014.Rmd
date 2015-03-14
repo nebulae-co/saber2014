@@ -52,7 +52,7 @@ ecdf_eval <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
   set_colnames(totales_ordenados)
 ```
 
-```{r ecdf_cv_distance}
+```{r ecdf_cv_distance, cache = TRUE}
 # Funcion de distancia entre vectores para aplicar a los totales de los municipios
 
 fun_distance <- function(a, b, ...){
@@ -62,12 +62,12 @@ fun_distance <- function(a, b, ...){
 
   diff_2_y <- sapply(X = 1:(n-1),
                      FUN = function(x, v, a, b){
-                       abs(mean(v[x] >= a) - mean(v[x] >= b))
+                       mean(v[x] >= a) - mean(v[x] >= b)
                      },
                      v = valores, a = a, b = b,
                      USE.NAMES = FALSE)
 
-  drop(diff_x %*% diff_2_y)^2
+  drop(diff_x %*% diff_2_y^2)
 }
 
 # Partir los totales por municipio
