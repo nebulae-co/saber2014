@@ -11,6 +11,7 @@ library("knitr")
 library("FactoMineR")
 library("magrittr")
 library("dplyr")
+library("reshape2")
 library("ggplot2")
 
 opts_chunk$set(echo = FALSE,
@@ -52,7 +53,7 @@ ecdf_eval <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
   set_colnames(totales_ordenados)
 ```
 
-```{r ecdf_CvM_distance, cache = TRUE}
+```{r ecdf_CvM_distance}
 # Funcion de distancia entre vectores para aplicar a los totales de los municipios
 
 fun_distance <- function(a, b, ...){
@@ -69,13 +70,15 @@ fun_distance <- function(a, b, ...){
 
   drop(diff_x %*% diff_2_y^2)
 }
+```
 
+```{r totales}
 # Partir los totales por municipio
-
 totales <- nuevo_saber_11 %$% split(x = TOTAL, f = MUNI_RESIDE)
+```
 
+```{r dist_matrix, cache = TRUE}
 # Calcular la matriz de distancias
-
 dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
                       dimnames = list(names(totales), names(totales)))
 
@@ -89,11 +92,11 @@ dist_matrix %<>% as.dist
 clustering_municipios <- dist_matrix %>%
   hclust(method = "ward.D") # Agruparlo con el método de ward
 
-grupo <- c(Pionero = 5, Suficiente = 2, Regular = 1, Insuficiente = 4, 
-           Prioritario = 3)
+# grupo <- c(Pionero = 5, Suficiente = 2, Regular = 1, Insuficiente = 4, 
+#            Prioritario = 3, Otro = 6)
 
-grupos_municipios <- clustering_municipios %>% cutree(k = 5) %>%
-  factor(levels = grupo, labels = names(grupo))
+grupos_municipios <- clustering_municipios %>% cutree(k = 9) %>%
+  factor # (levels = grupo, labels = names(grupo))
 
 ggplot(data.frame(grupos_municipios = grupos_municipios), aes(factor(1), fill = grupos_municipios)) +
   geom_bar(width = 1) +
@@ -109,14 +112,12 @@ RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         N = municipios_50$N,
                         grupo = grupos_municipios)
 
-qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO) +
-  scale_y_continuous(limits = c(-20, 31))
+qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
 #plot(ACP_de_municipios, label="none")
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
 ```
 
 ```{r plot}
-library("reshape2")
 dff_to_plot <- ecdf_eval %>% mutate(municipio = rownames(.),
                                     grupo = grupos_municipios) %>%
   melt(id.vars = c("municipio", "grupo")) %>% arrange(grupo)
@@ -125,6 +126,11 @@ dff_to_plot %>%
   ggplot +
   aes(x = variable, y = municipio, fill = value, color = grupo) +
   geom_raster() +
-  facet_wrap(~ grupo, ncol = 1, scale = "free") +
-  coord_polar()
+  facet_wrap(~ grupo, ncol = 1, scale = "free")
+```
+
+```{r Kruskal-Wallis}
+totales %>% .[which(grupos_municipios == 1)] %T%
+  boxplot %>%
+  kruskal.test
 ```
