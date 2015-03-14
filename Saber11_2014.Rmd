@@ -80,8 +80,9 @@ dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
                       dimnames = list(names(totales), names(totales)))
 
 dist_matrix[lower.tri(dist_matrix)] <- totales %>%
-  combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])}) %>%
-  as.dist
+  combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
+
+dist_matrix %<>% as.dist
 ```
 
 
