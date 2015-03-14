@@ -85,18 +85,19 @@ dist_matrix[lower.tri(dist_matrix)] <- totales %>%
 dist_matrix %<>% as.dist
 ```
 
-
 ```{r agrupamiento}
 clustering_municipios <- dist_matrix %>%
   hclust(method = "ward.D") # Agruparlo con el método de ward
 
-grupos_municipios <- clustering_municipios %>% cutree(k = 5)  %>%
-  factor(levels = c(2, 1, 4, 5, 3), labels=c("Pionero", "Suficiente", "Regular", "Insuficiente", "Prioritario"))
+grupo <- c(Pionero = 5, Suficiente = 2, Regular = 1, Insuficiente = 4, 
+           Prioritario = 3)
+
+grupos_municipios <- clustering_municipios %>% cutree(k = 5) %>%
+  factor(levels = grupo, labels = names(grupo))
 
 ggplot(data.frame(grupos_municipios = grupos_municipios), aes(factor(1), fill = grupos_municipios)) +
   geom_bar(width = 1) +
   coord_polar(theta = "y")
-ggsave("pastel_grupos.png", bg = "transparent")
 ```
 
 ```{r ACP}
@@ -108,8 +109,22 @@ RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         N = municipios_50$N,
                         grupo = grupos_municipios)
 
-qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
-ggsave("ACP_municipios_grupos.png")
+qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO) +
+  scale_y_continuous(limits = c(-20, 31))
 #plot(ACP_de_municipios, label="none")
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
+```
+
+```{r plot}
+library("reshape2")
+dff_to_plot <- ecdf_eval %>% mutate(municipio = rownames(.),
+                                    grupo = grupos_municipios) %>%
+  melt(id.vars = c("municipio", "grupo")) %>% arrange(grupo)
+
+dff_to_plot %>%
+  ggplot +
+  aes(x = variable, y = municipio, fill = value, color = grupo) +
+  geom_raster() +
+  facet_wrap(~ grupo, ncol = 1, scale = "free") +
+  coord_polar()
 ```
