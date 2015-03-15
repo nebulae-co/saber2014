@@ -90,17 +90,27 @@ dist_matrix %<>% as.dist
 
 ```{r agrupamiento}
 clustering_municipios <- dist_matrix %>%
-  hclust(method = "ward.D") # Agruparlo con el método de ward
+  hclust(method = "ward.D2") # Agruparlo con el método de ward
 
+#plot(clustering_municipios, label=FALSE)
 # grupo <- c(Pionero = 5, Suficiente = 2, Regular = 1, Insuficiente = 4, 
 #            Prioritario = 3, Otro = 6)
 
-grupos_municipios <- clustering_municipios %>% cutree(k = 9) %>%
+numero_grupos<-5
+grupos_municipios <- clustering_municipios %>% cutree(k = numero_grupos) %>%
   factor # (levels = grupo, labels = names(grupo))
+
+ecdf_eval %>% kmeans(aggregate(., by=list(grupos_municipios),FUN=mean)[,-1])  %$% 
+  cluster %>%
+  factor(labels = LETTERS[1:numero_grupos]) ->
+  grupos_municipios
+
+
 
 ggplot(data.frame(grupos_municipios = grupos_municipios), aes(factor(1), fill = grupos_municipios)) +
   geom_bar(width = 1) +
   coord_polar(theta = "y")
+
 ```
 
 ```{r ACP}
@@ -109,11 +119,12 @@ ACP_de_municipios <- ecdf_eval %>%
 
 RESULTADO <- data.frame(x = ACP_de_municipios$ind$coord[, 1],
                         y = ACP_de_municipios$ind$coord[, 2],
+                        z = ACP_de_municipios$ind$coord[, 3],
                         N = municipios_50$N,
                         grupo = grupos_municipios)
 
 qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
-#plot(ACP_de_municipios, label="none")
+#plot(ACP_de_municipios, label="none", axes = c(1,3))
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
 ```
 
@@ -130,7 +141,6 @@ dff_to_plot %>%
 ```
 
 ```{r Kruskal-Wallis}
-totales %>% .[which(grupos_municipios == 1)] %T%
-  boxplot %>%
+totales %>% .[which(grupos_municipios == "C")] %>%
   kruskal.test
 ```
