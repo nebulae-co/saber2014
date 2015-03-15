@@ -96,13 +96,14 @@ clustering_municipios <- dist_matrix %>%
 # grupo <- c(Pionero = 5, Suficiente = 2, Regular = 1, Insuficiente = 4, 
 #            Prioritario = 3, Otro = 6)
 
-numero_grupos<-5
+numero_grupos<-11
+nombres_grupos<-LETTERS[1:numero_grupos]
 grupos_municipios <- clustering_municipios %>% cutree(k = numero_grupos) %>%
   factor # (levels = grupo, labels = names(grupo))
 
 ecdf_eval %>% kmeans(aggregate(., by=list(grupos_municipios),FUN=mean)[,-1])  %$% 
   cluster %>%
-  factor(labels = LETTERS[1:numero_grupos]) ->
+  factor(labels = nombres_grupos) ->
   grupos_municipios
 
 
@@ -141,6 +142,19 @@ dff_to_plot %>%
 ```
 
 ```{r Kruskal-Wallis}
-totales %>% .[which(grupos_municipios == "C")] %>%
-  kruskal.test
+
+MIRE<-split(totales, grupos_municipios)
+
+kruskal.test(MIRE[[1]])
+kruskal.test(MIRE[[2]])
+kruskal.test(MIRE[[3]])
+kruskal.test(MIRE[[4]])
+kruskal.test(MIRE[[5]])
+kruskal.test(MIRE[[6]])
+kruskal.test(MIRE[[7]])
+kruskal.test(MIRE[[8]])
+kruskal.test(MIRE[[9]])
+kruskal.test(MIRE[[10]])
+kruskal.test(MIRE[[11]])
+
 ```
