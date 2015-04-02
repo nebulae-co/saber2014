@@ -26,15 +26,35 @@ load("./data/Saber11.RData")
 ```
 
 ```{r municipios}
+Saber11 %<>% as.tbl %>%
+  filter(is.na(DISC_COGNITIVA) &        
+         DISC_CONDICION_ESPECIAL == "" & 
+         DIS_MOTRIZ == "" & 
+	       DISC_INVIDENTE == "" & 
+	       DISC_SORDO == "" & 
+	       DISC_SDOWN == "" & 
+	       DISC_AUTISMO == "") %>%
+  transmute(Total = TOTAL,
+            Lectura = LECTURA_CRITICA_PUNT,
+            Mate = MATEMATICAS_PUNT,
+            Sociales = SOCIALES_CIUDADANAS_PUNT,
+            Ciencias = CIENCIAS_NATURALES_PUNT,
+            Ingles = INGLES_PUNT,
+            Genero = PERS_GENERO,
+            Estrato = as.ordered(FINS_ESTRATOVIVIENDAENERGIA),
+            Oficial = NATURALEZA,
+            Departamento = DEPARTAMENTO,
+            Municipio = MUNI_RESIDE)
+
 municipios_50 <- Saber11 %>%
-  dplyr::group_by(MUNI_RESIDE) %>%
+  dplyr::group_by(Municipio) %>%
   dplyr::summarise(N = n()) %>%
   dplyr::filter(N > 50) %>%
-  dplyr::mutate(MUNI_RESIDE = as.character(MUNI_RESIDE))
+  dplyr::mutate(Municipio = as.character(Municipio))
 
 nuevo_saber_11 <- Saber11 %>%
-  dplyr::filter(MUNI_RESIDE %in% municipios_50$MUNI_RESIDE) %>%
-  dplyr::select(MUNI_RESIDE, DEPA_RESIDE, TOTAL)
+  dplyr::filter(Municipio %in% municipios_50$Municipio) %>%
+  dplyr::select(Municipio, Departamento, Total)
 
 factores <- sapply(X = nuevo_saber_11, FUN = is.factor)
 nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
@@ -43,10 +63,10 @@ rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
 ```{r ecdf}
-totales_ordenados <- nuevo_saber_11$TOTAL %>% unique %>% sort
+totales_ordenados <- nuevo_saber_11$Total %>% unique %>% sort
 
 ecdf_municipios <- nuevo_saber_11 %$%
-  tapply(X = TOTAL, INDEX = MUNI_RESIDE, FUN = ecdf)
+  tapply(X = Total, INDEX = Municipio, FUN = ecdf)
 
 ecdf_eval <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
   y = totales_ordenados) %>% t %>% data.frame %>%
@@ -74,7 +94,7 @@ fun_distance <- function(a, b, ...){
 
 ```{r totales}
 # Partir los totales por municipio
-totales <- nuevo_saber_11 %$% split(x = TOTAL, f = MUNI_RESIDE)
+totales <- nuevo_saber_11 %$% split(x = Total, f = Municipio)
 ```
 
 ```{r dist_matrix, cache = TRUE}
