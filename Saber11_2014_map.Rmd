@@ -1,0 +1,105 @@
+---
+title: "Saber 11 2014"
+author: "Datum"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+rm(list = ls())
+
+library("knitr")
+library("dplyr")
+library("rgdal")
+library("magrittr")
+library("scales")
+library("ggplot2")
+library("ggmap")
+library("leaflet")
+
+opts_chunk$set(echo = FALSE,
+               warning = FALSE,
+               message = FALSE)
+```
+
+```{r data}
+load("./data/Saber11.RData")
+```
+
+```{r municipios}
+Saber11 %<>% tbl_df %>%
+  filter(is.na(DISC_COGNITIVA) &        
+         DISC_CONDICION_ESPECIAL == "" & 
+	       DIS_MOTRIZ == "" & 
+	       DISC_INVIDENTE == "" & 
+	       DISC_SORDO == "" & 
+	       DISC_SDOWN == "" & 
+	       DISC_AUTISMO == "") %>%
+  transmute(total = TOTAL,
+            lectura = LECTURA_CRITICA_PUNT,
+            mate = MATEMATICAS_PUNT,
+            sociales = SOCIALES_CIUDADANAS_PUNT,
+            ciencias = CIENCIAS_NATURALES_PUNT,
+            ingles = INGLES_PUNT,
+            genero = PERS_GENERO,
+            estrato = as.ordered(FINS_ESTRATOVIVIENDAENERGIA),
+            oficial = NATURALEZA,
+            departamento = DEPARTAMENTO,
+            municipio = MUNI_RESIDE,
+            id_dane = COD_MUNI_RESIDE)
+
+## Replace id_dane codes for new municipalities as follows:
+# Guachene        19300 -> Caloto                   19142
+# Tuchin          23815 -> San Andrés de Sotavento  23670
+# San Jose de Ure 23682 -> Montelibano              23466
+# Norosi          13490 -> Rio Viejo                13600
+
+Saber11 %<>%
+  mutate(id_dane = replace(id_dane, id_dane == 19300, 19142),
+         id_dane = replace(id_dane, id_dane == 23815, 23670),
+         id_dane = replace(id_dane, id_dane == 23682, 23466),
+         id_dane = replace(id_dane, id_dane == 13490, 13600))
+```
+
+```{r map_data}
+map_sp <- readOGR(dsn = "data/map", layer = "mpio", verbose = FALSE, 
+                  stringsAsFactors = FALSE) %>%
+  spTransform(CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+                  +towgs84=0,0,0"))
+
+map_sp@data %<>%
+  transmute(id = rownames(.),
+            id_dane = as.integer(MPIOS), # as.integer(paste0(DPTO, MPIO)),
+            departamento = NOMBRE_DPT,
+            municipio = chartr("¥", "Ñ", NOMBRE_MPI),
+            cabecera = chartr("¥", "Ñ", NOMBRE_CAB),
+            area = AREA,
+            perimetro = PERIMETER,
+            clase = CLASEMUN,
+            zona = ZONA,
+            regional = OF_REG) %>%
+  left_join(
+            Saber11 %>% group_by(id_dane) %>%
+              summarise(promedio = mean(total, na.rm = TRUE))
+            )
+
+map_df <- map_sp %>% fortify %>% tbl_df %>% left_join(map_sp@data)
+```
+
+```{r ggplot_map_df}
+map_df %>% ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = promedio)) +
+  coord_equal() + 
+  scale_fill_gradient(name = "Promedio", low = "red", high = "green",
+                      space = "Lab", guide = "colourbar") +
+  ggmap::theme_nothing(legend = TRUE)
+```
+
+```{r leaflet_map}
+map_color <- rescale(map_sp@data$promedio) %>%
+  seq_gradient_pal(low = "red", high = "green", space = )() %>%
+  replace(is.na(.), values = "#CFCFCF")
+
+leaflet(map_sp) %>%
+  addPolygons(color = "black", weight = 0.2, fillColor = map_color, 
+              fillOpacity = 1)
+```
