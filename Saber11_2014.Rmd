@@ -64,14 +64,25 @@ rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
 ```
 
 ```{r ecdf}
-totales_ordenados <- nuevo_saber_11$Total %>% unique %>% sort
+evaluated_ecdf <- function(categories, values){
+  
+  # a vector with sorted and unique values
+  unique(values) -> .
+  sort(.) -> ordenados
+  
+  # a list of functions, one function per category
+  ecdf_categories <- tapply(X = values, INDEX = categories, FUN = ecdf)
+  
+  # a data.frame with the evaluations of the functions in the sorted values
+  sapply(X = ecdf_categories, FUN = function(x, y){x(y)},
+    y = ordenados) -> .
+  t(.) ->.
+  data.frame(.)->.
+  set_colnames(., totales_ordenados)
+}
 
-ecdf_municipios <- nuevo_saber_11 %$%
-  tapply(X = Total, INDEX = id_Municipio, FUN = ecdf)
+ecdf_eval <- nuevo_saber_11 %$% evaluated_ecdf(categories = id_Municipio, values = Total)
 
-ecdf_eval <- sapply(X = ecdf_municipios, FUN = function(x, y){x(y)},
-  y = totales_ordenados) %>% t %>% data.frame %>%
-  set_colnames(totales_ordenados)
 ```
 
 ```{r ecdf_CvM_distance}
@@ -182,5 +193,10 @@ kruskal.test(MIRE[[2]])
 kruskal.test(MIRE[[3]])
 kruskal.test(MIRE[[4]])
 kruskal.test(MIRE[[5]])
+kruskal.test(MIRE[[6]])
+kruskal.test(MIRE[[7]])
+kruskal.test(MIRE[[8]])
+kruskal.test(MIRE[[9]])
+kruskal.test(MIRE[[10]])
 
 ```
