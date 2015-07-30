@@ -118,15 +118,15 @@ clustering_municipios <- dist_matrix %>%
 #            Prioritario = 3, Otro = 6)
 
 numero_grupos<-10
-nombres_grupos<-LETTERS[1:numero_grupos]
+nombres_grupos<-LETTERS[c(4, 5, 6, 9, 8, 7, 3, 1, 2, 10)]
 grupos_municipios <- clustering_municipios %>% cutree(k = numero_grupos) %>%
   factor # (levels = grupo, labels = names(grupo))
 
 ecdf_eval %>% kmeans(aggregate(., by=list(grupos_municipios),FUN=mean)[,-1])  %$% 
-  cluster %>%
-  factor(labels = nombres_grupos) ->
+  cluster -> 
   grupos_municipios
 
+factor(nombres_grupos[grupos_municipios], ordered = TRUE) -> grupos_municipios
 
 ggplot(data.frame(grupos_municipios = grupos_municipios), aes(factor(1), fill = grupos_municipios)) +
   geom_bar(width = 1) +
@@ -148,7 +148,7 @@ RESULTADO <- data.frame(
   stringsAsFactors = FALSE
   )
 
-qplot(x = x, y = y, size = N, colour = grupo, data = RESULTADO)
+qplot(x = x, y = y, colour = grupo, size = N, data = RESULTADO)
 #plot(ACP_de_municipios, label="none", axes = c(1,2))
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
 ```
@@ -163,6 +163,13 @@ dff_to_plot %>%
   aes(x = variable, y = id_municipio, fill = value, color = grupo) +
   geom_raster() +
   facet_wrap(~ grupo, ncol = 1, scale = "free")
+```
+
+
+```{r Colmaps}
+library("colmaps")
+colmap(map = municipios, data = RESULTADO, var = "grupo")
+
 ```
 
 
