@@ -13,6 +13,7 @@ library("magrittr")
 library("dplyr")
 library("reshape2")
 library("ggplot2")
+library("colmaps")#
 
 opts_chunk$set(echo = FALSE,
                results = "hide",
@@ -207,13 +208,11 @@ general_box_plot +
 
 
 ```{r Colmaps}
-library("colmaps")
-colmap(map = municipios, data = RESULTADO, var = "grupo")
-
+colmaps::colmap(map = municipios, data = RESULTADO, var = "grupo")
 ```
 
 
-```{r Kruskal-Wallis, eval=FALSE, echo=FALSE, include=FALSE}
+```{r Kruskal-Wallis}
 
 MIRE<-split(totales, grupos_municipios)
 
