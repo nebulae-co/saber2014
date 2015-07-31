@@ -194,7 +194,7 @@ dff_to_plot %>% ggplot +
     geom = "boxplot",
     mapping = aes(x = id_Municipio, y = Total)
   ) +
-  theme(axis.ticks = element_blank(), axis.text.x = element_blank()) +
+  theme(axis.ticks = element_blank(), axis.text.x = element_blank(), panel.background = element_blank()) +
   xlab("") +
   ylab("") -> general_box_plot
 
@@ -214,17 +214,14 @@ colmaps::colmap(map = municipios, data = RESULTADO, var = "grupo")
 
 ```{r Kruskal-Wallis}
 
-MIRE<-split(totales, grupos_municipios)
+list_for_kwtest<-split(totales, grupos_municipios)
 
-kruskal.test(MIRE[[1]])
-kruskal.test(MIRE[[2]])
-kruskal.test(MIRE[[3]])
-kruskal.test(MIRE[[4]])
-kruskal.test(MIRE[[5]])
-kruskal.test(MIRE[[6]])
-kruskal.test(MIRE[[7]])
-kruskal.test(MIRE[[8]])
-kruskal.test(MIRE[[9]])
-kruskal.test(MIRE[[10]])
+lapply(X = list_for_kwtest, FUN = function(x){kruskal.test(x)$p.value}) %>% 
+  unlist %>% data.frame %>% setNames("P_value") %>% mutate(grupo = rownames(.)) -> kwtest_pvalues
+
+kwtest_pvalues %>% ggplot + aes(x = grupo, y = P_value) +
+  geom_bar(stat = "identity") + 
+  geom_abline(intercept = 0.005, slope = 0) +
+  ggtitle("P valores Kruskall Wallis para los grupos")
 
 ```
