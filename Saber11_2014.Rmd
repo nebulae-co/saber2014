@@ -60,7 +60,7 @@ nuevo_saber_11 <- Saber11 %>%
 factores <- sapply(X = nuevo_saber_11, FUN = is.factor)
 nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 
-rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50")))
+rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50", "dist_matrix")))
 ```
 
 ```{r ecdf}
@@ -78,7 +78,7 @@ evaluated_ecdf <- function(categories, values){
     y = ordenados) -> .
   t(.) ->.
   data.frame(.)->.
-  set_colnames(., totales_ordenados)
+  set_colnames(., ordenados)
 }
 
 ecdf_eval <- nuevo_saber_11 %$% evaluated_ecdf(categories = id_Municipio, values = Total)
@@ -165,17 +165,42 @@ qplot(x = x, y = y, colour = grupo, size = N, data = RESULTADO)
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
 ```
 
-```{r plot}
+```{r raster_plot}
 dff_to_plot <- ecdf_eval %>% mutate(id_municipio = rownames(.),
                                     grupo = grupos_municipios) %>%
   melt(id.vars = c("id_municipio", "grupo")) %>% arrange(grupo)
 
 dff_to_plot %>%
   ggplot +
-  aes(x = variable, y = id_municipio, fill = value, color = grupo) +
+  aes(y = variable, x = id_municipio, fill = value) +
   geom_raster() +
-  facet_wrap(~ grupo, ncol = 1, scale = "free")
+  theme(axis.ticks = element_blank(), axis.text = element_blank(), legend.position="none") +
+  xlab("") +
+  ylab("") -> general_raster_plot
 
+general_raster_plot
+
+general_raster_plot +
+  facet_grid(~ grupo, scale = "free_x", space = "free_x")
+
+```
+
+```{r box_plot}
+merge(nuevo_saber_11, RESULTADO, by.x = "id_Municipio", by.y = "id") -> dff_to_plot
+
+dff_to_plot %>% ggplot + 
+  layer(
+    geom = "boxplot",
+    mapping = aes(x = id_Municipio, y = Total)
+  ) +
+  theme(axis.ticks = element_blank(), axis.text.x = element_blank()) +
+  xlab("") +
+  ylab("") -> general_box_plot
+
+general_box_plot
+
+general_box_plot +
+  facet_grid(~ grupo, scales = "free_x", space = "free_x")
 
 
 ```
