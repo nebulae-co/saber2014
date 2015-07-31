@@ -45,7 +45,7 @@ Saber11 %<>% as.tbl %>%
             Estrato = as.ordered(FINS_ESTRATOVIVIENDAENERGIA),
             Oficial = NATURALEZA,
             Departamento = DEPARTAMENTO,
-            id_Municipio = COD_MUNI_RESIDE,
+            id_Municipio = sprintf("%05d", COD_MUNI_RESIDE),
             Municipio = MUNI_RESIDE)
 
 municipios_50 <- Saber11 %>%
@@ -151,7 +151,7 @@ ACP_de_municipios <- ecdf_eval %>%
   FactoMineR::PCA(graph = FALSE)
 
 RESULTADO <- data.frame(
-  id = sprintf("%05d", municipios_50$id_Municipio),
+  id = municipios_50$id_Municipio,
   x = ACP_de_municipios$ind$coord[, 1],
   y = ACP_de_municipios$ind$coord[, 2],
   z = ACP_de_municipios$ind$coord[, 3],
@@ -175,6 +175,9 @@ dff_to_plot %>%
   aes(x = variable, y = id_municipio, fill = value, color = grupo) +
   geom_raster() +
   facet_wrap(~ grupo, ncol = 1, scale = "free")
+
+
+
 ```
 
 
