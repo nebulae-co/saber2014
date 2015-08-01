@@ -113,26 +113,38 @@ fun_distance <- function(a, b, ...){
 }
 ```
 
-```{r totales}
-# Partir los totales por municipio
-totales <- nuevo_saber_11 %$% split(x = Total, f = id_Municipio)
-```
-
 ```{r dist_matrix, cache = TRUE}
-# Calcular la matriz de distancias
+# Funcion para alcular la matriz de distancias
 
+distance_matrix_f <- function(categories, values){
+  
+  unique(categories) -> .
+  lengt(.) -> n_categories
+  
+  values_by_cat <- split(x = values, f = categories)
 
-dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
-                      dimnames = list(names(totales), names(totales)))
+  dist_matrix <- matrix(nrow = n_categories, ncol = n_categories,
+                      dimnames = list(names(values_by_cat), names(values_by_cat)))
+  
+  dist_matrix[lower.tri(dist_matrix)] <- 
+    combn(values_by_cat, m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
 
+ as.dist(dist_matrix)
 
+}
 
-dist_matrix[lower.tri(dist_matrix)] <- totales %>%
-  combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
+dist_matrix <- nuevo_saber_11 %$% distance_matrix_f(categories = id_Municipio, values = Total)
 
-
-
-dist_matrix %<>% as.dist
+# Partir los totales por municipio
+# totales <- nuevo_saber_11 %$% split(x = Total, f = id_Municipio)
+# 
+# dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
+#                       dimnames = list(names(totales), names(totales)))
+# 
+# dist_matrix[lower.tri(dist_matrix)] <- totales %>%
+#   combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
+# 
+# dist_matrix %<>% as.dist
 
 # To reaload the dist_matrix
 # opts_knit$set("output.dir"= getwd())
@@ -232,7 +244,7 @@ general_box_plot +
 
 
 ```{r Colmaps}
-colmaps::colmap(map = municipios, data = RESULTADO, var = "x", map_id = "id", data_id = "id", autocomplete = TRUE)
+colmaps::colmap(map = municipios, data = RESULTADO, var = "grupo", map_id = "id", data_id = "id", autocomplete = TRUE)
 ```
 
 
