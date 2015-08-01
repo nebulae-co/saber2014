@@ -191,6 +191,8 @@ RESULTADO <- data.frame(
   stringsAsFactors = FALSE
   )
 
+RESULTADO <- merge(x = RESULTADO, y = municipios@data, by.x = "id", by.y = "id")
+
 qplot(x = x, y = y, colour = grupo, size = N, data = RESULTADO)
 #plot(ACP_de_municipios, label="none", axes = c(1,2))
 #plot(ACP_de_municipios, choix = "var") #para ver la correlación de las variables
@@ -243,8 +245,26 @@ general_box_plot +
 ```
 
 
-```{r Colmaps}
+```{r Colmaps_todo}
 colmaps::colmap(map = municipios, data = RESULTADO, var = "grupo", map_id = "id", data_id = "id", autocomplete = TRUE)
+```
+
+
+```{r Colmaps_deptos}
+plot_depto <- function(depto_name){
+  depto_data <- RESULTADO %>% filter(depto == depto_name)
+  depto_map <- colmaps::map_departamentos(depto_name)
+
+  colmaps::colmap(map = depto_map, data = depto_data, var = "grupo", map_id = "id", data_id = "id", autocomplete = TRUE) + ggtitle(depto_name)
+  
+}
+
+deptos_graphs <- lapply(X = departamentos@data[["depto"]], plot_depto)
+
+departamentos@data[["depto"]] -> names(deptos_graphs)
+
+deptos_graphs
+
 ```
 
 
