@@ -119,7 +119,7 @@ fun_distance <- function(a, b, ...){
 distance_matrix_f <- function(categories, values){
   
   unique(categories) -> .
-  lengt(.) -> n_categories
+  length(.) -> n_categories
   
   values_by_cat <- split(x = values, f = categories)
 
