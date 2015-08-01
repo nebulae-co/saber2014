@@ -13,13 +13,16 @@ library("magrittr")
 library("dplyr")
 library("reshape2")
 library("ggplot2")
-library("colmaps")#
+library("colmaps")#devtools::install_github("nebulae-co/colmaps")
 
-opts_chunk$set(echo = FALSE,
-               results = "hide",
-               warning = FALSE,
-               fig.path = "./Figures/",
-               fig.keep = "last")
+opts_chunk$set(
+  cache.path = "./cache/",
+  echo = TRUE,
+  results = "hide",
+  warning = FALSE,
+  fig.path = "./Figures/",
+  fig.keep = "last"
+  )
 ```
 
 ```{r data}
@@ -62,6 +65,11 @@ factores <- sapply(X = nuevo_saber_11, FUN = is.factor)
 nuevo_saber_11[, factores] %<>% lapply(FUN = factor)
 
 rm(list = setdiff(ls(), c("nuevo_saber_11", "municipios_50", "dist_matrix")))
+```
+
+```{r Colmaps_tamaño}
+colmaps::colmap(map = municipios, data = municipios_50, var = "N", data_id = "id_Municipio", map_id = "id", autocomplete = TRUE) +
+  ggtitle("Cantidad de estudiantes evaluados")
 ```
 
 ```{r ecdf}
@@ -112,13 +120,23 @@ totales <- nuevo_saber_11 %$% split(x = Total, f = id_Municipio)
 
 ```{r dist_matrix, cache = TRUE}
 # Calcular la matriz de distancias
+
+
 dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
                       dimnames = list(names(totales), names(totales)))
+
+
 
 dist_matrix[lower.tri(dist_matrix)] <- totales %>%
   combn(m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
 
+
+
 dist_matrix %<>% as.dist
+
+# To reaload the dist_matrix
+# opts_knit$set("output.dir"= getwd())
+# knitr::load_cache(label = "dist_matrix", object = "dist_matrix")
 ```
 
 ```{r agrupamiento}
@@ -181,6 +199,9 @@ dff_to_plot %>%
 
 general_raster_plot
 
+```
+
+```{r raster_plot2}
 general_raster_plot +
   facet_grid(~ grupo, scale = "free_x", space = "free_x")
 
@@ -200,6 +221,9 @@ dff_to_plot %>% ggplot +
 
 general_box_plot
 
+```
+
+```{r box_plot2}
 general_box_plot +
   facet_grid(~ grupo, scales = "free_x", space = "free_x")
 
@@ -208,7 +232,7 @@ general_box_plot +
 
 
 ```{r Colmaps}
-colmaps::colmap(map = municipios, data = RESULTADO, var = "grupo")
+colmaps::colmap(map = municipios, data = RESULTADO, var = "x", map_id = "id", data_id = "id", autocomplete = TRUE)
 ```
 
 
@@ -225,3 +249,4 @@ kwtest_pvalues %>% ggplot + aes(x = grupo, y = P_value) +
   ggtitle("P valores Kruskall Wallis para los grupos")
 
 ```
+
