@@ -116,27 +116,27 @@ fun_distance <- function(a, b, ...){
 ```{r dist_matrix, cache = TRUE}
 # Funcion para alcular la matriz de distancias
 
-distance_matrix_f <- function(categories, values){
-  
-  unique(categories) -> .
-  length(.) -> n_categories
-  
-  values_by_cat <- split(x = values, f = categories)
-
-  dist_matrix <- matrix(nrow = n_categories, ncol = n_categories,
-                      dimnames = list(names(values_by_cat), names(values_by_cat)))
-  
-  dist_matrix[lower.tri(dist_matrix)] <- 
-    combn(values_by_cat, m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
-
- as.dist(dist_matrix)
-
-}
-
-dist_matrix <- nuevo_saber_11 %$% distance_matrix_f(categories = id_Municipio, values = Total)
+# distance_matrix_f <- function(categories, values){
+#   
+#   unique(categories) -> .
+#   length(.) -> n_categories
+#   
+#   values_by_cat <- split(x = values, f = categories)
+# 
+#   dist_matrix <- matrix(nrow = n_categories, ncol = n_categories,
+#                       dimnames = list(names(values_by_cat), names(values_by_cat)))
+#   
+#   dist_matrix[lower.tri(dist_matrix)] <- 
+#     combn(values_by_cat, m = 2, FUN = function(x){fun_distance(x[[1]], x[[2]])})
+# 
+#  as.dist(dist_matrix)
+# 
+# }
+# 
+# dist_matrix <- nuevo_saber_11 %$% distance_matrix_f(categories = id_Municipio, values = Total)
 
 # Partir los totales por municipio
-# totales <- nuevo_saber_11 %$% split(x = Total, f = id_Municipio)
+ totales <- nuevo_saber_11 %$% split(x = Total, f = id_Municipio)
 # 
 # dist_matrix <- matrix(nrow = nrow(municipios_50), ncol = nrow(municipios_50),
 #                       dimnames = list(names(totales), names(totales)))
@@ -147,8 +147,8 @@ dist_matrix <- nuevo_saber_11 %$% distance_matrix_f(categories = id_Municipio, v
 # dist_matrix %<>% as.dist
 
 # To reaload the dist_matrix
-# opts_knit$set("output.dir"= getwd())
-# knitr::load_cache(label = "dist_matrix", object = "dist_matrix")
+ opts_knit$set("output.dir"= getwd())
+ knitr::load_cache(label = "dist_matrix", object = "dist_matrix")
 ```
 
 ```{r agrupamiento}
@@ -174,6 +174,8 @@ nombres_grupos[grupos_municipios] -> grupos_municipios
 ggplot(data.frame(grupos_municipios = grupos_municipios), aes(factor(1), fill = grupos_municipios)) +
   geom_bar(width = 1) +
   coord_polar(theta = "y")
+
+grupos_municipios %>% table 
 
 ```
 
@@ -245,27 +247,30 @@ general_box_plot +
 ```
 
 
+```{r density_plot}
+
+dff_to_plot %>% 
+  ggplot +
+  aes(x = Total, colour = id_Municipio) +
+  geom_density() +
+  theme(axis.ticks = element_blank(), axis.text = element_blank(), legend.position="none") +
+  xlab("") +
+  ylab("") -> general_density_plot
+
+general_density_plot
+
+```
+
+```{r density_plot2}
+general_density_plot +
+  facet_wrap(~ grupo, ncol = 2)
+
+```
+
 ```{r Colmaps_todo}
 colmaps::colmap(map = municipios, data = RESULTADO, var = "grupo", map_id = "id", data_id = "id", autocomplete = TRUE)
 ```
 
-
-```{r Colmaps_deptos}
-plot_depto <- function(depto_name){
-  depto_data <- RESULTADO %>% filter(depto == depto_name)
-  depto_map <- colmaps::map_departamentos(depto_name)
-
-  colmaps::colmap(map = depto_map, data = depto_data, var = "grupo", map_id = "id", data_id = "id", autocomplete = TRUE) + ggtitle(depto_name)
-  
-}
-
-deptos_graphs <- lapply(X = departamentos@data[["depto"]], plot_depto)
-
-departamentos@data[["depto"]] -> names(deptos_graphs)
-
-deptos_graphs
-
-```
 
 
 ```{r Kruskal-Wallis}
