@@ -65,3 +65,10 @@ Usamos los resultados a nivel individual de las pruebas Saber 11 para el segundo
 	* Realizar un ACP sobre ernesto y se grafica mostrando el tamaño del municipio (número de colegios evaluados) y el grupo al que pertenecen.
 
 - Validación: Hay que realizar pruebas de Krueskall - Wallis Sobre la clasificación.
+
+
+## Abstract
+
+Este es el abstract propuesto para la presentación en el ICFES.
+
+El problema de la Estimación en Áreas Pequeñas es abordado desde la perspectiva de la Minería de Datos. Se realiza un recuento de los algoritmos de clasificación no supervisada con el fin de encontrar el adecuado para agrupar nubes de puntos a partir de comportamientos etocásticos. Esto premite proponer un método de agregación estocástica que, con características inferenciales, permite la estimación y modelamiento de áreas pequeñas. La aplicación a los datos del examen Saber11 es inmediata, logrando obtener modelos prescriptivos a través del tiempo por municipio y, en el caso de Bogotá, por colegio. La discusión se enfoca en la parametrización y el modelamiento estocásticos, y compara el método propuesto con las altrenativas actuales desde la perspectiva del modelo de innovación de Henderson y Clark. Se concluye favorablemente y se dan pautas para trabajo futuro.
