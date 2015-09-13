@@ -1,0 +1,46 @@
+---
+title: "Documento ICFES"
+output: html_document
+---
+
+## Abstract
+
+El problema de la Estimación en Áreas Pequeñas es abordado desde la perspectiva de la Minería de Datos. Se realiza un recuento de los algoritmos de clasificación no supervisada con el fin de encontrar el adecuado para agrupar nubes de puntos a partir de comportamientos etocásticos. Esto premite proponer un método de agregación estocástica que, con características inferenciales, permite la estimación y modelamiento de áreas pequeñas. La aplicación a los datos del examen Saber11 es inmediata, logrando obtener modelos prescriptivos a través del tiempo por municipio y, en el caso de Bogotá, por colegio. La discusión se enfoca en la parametrización y el modelamiento estocásticos, y compara el método propuesto con las altrenativas actuales desde la perspectiva del modelo de innovación de Henderson y Clark. Se concluye favorablemente y se dan pautas para trabajo futuro.
+
+## Planteamiento del problema de investigación
+
+En varios escenarios existe el problema del Modelamiento en Áreas Pequeñas. Se trata de grandes cantidades de datos que se subdividen en muchos conjuntos pequeños. La realización de sendos modelos que permitan conocer el comportamiento de los datos enfocado en esta división es un reto que debe asumirse desde la estadística. 
+
+## Objetivos
+
+### General
+
+Diseñar un método cuantitativo que permita asociar distintas nubes de puntos y estandarizar el modelamiento estocástico en areas pequeñas.
+
+### Específicos
+
+- Aplicar el modelo de innovación de Henderson y Clark en el diseño del método.
+- Asumir una perspectiva del problema desde la Minería de Datos
+- Integrar los elementos estocásticos de manera natural. Manteniendo al mínimo los supuestos distribucionales.
+
+## Justificación
+
+Los datos del examen Saber11 son del orden de medio milón de registros; sin embargo se pueden agrupar en 1111 municipios o 11500 colegios. En ese orden de ideas no resulta viable obtener un modelo estocástico para cada uno de los subconjuntos, sin embargo es deeable poder hacerlo, ya que esto puede dar cuenta de cuáles son los mejores colegios (incentivos) y cuáles los peores municipios (prioridades). En el marco de políticas públicas para el desarrollo se necesitan herramientas de evaluación que faceiliten la medición del impacto, la identificación de prioridades y la estandarización de incentivos.
+
+## Método de análisis
+
+El objetivo del estudio es proponer un nuevo método. Éste se basa en el uso de herramientas estadísticas de inferencia no paramétrica y métodos de minería de datos para encontrar patrones y detectar tendencias en los datos. La aplicación de este método a los datos del examen Saber11 permite ajustar modelos estocásticos por colegios y por municipios.
+
+## Fuente de los datos
+
+El Instituto Colombiano para la Evaluación de la Educacaión ICFES pone a disposición de investigadores las bases de datos de resultados de las pruebas Saber11 y SaberPro.
+
+Las condiciones de acceso a los datos se pueden consultar [aquí](http://www.icfes.gov.co/investigacion/acceso-a-bases-de-datos)
+
+## Principales resultados
+
+- Se resenta el método propuesto
+- Se presenta un análisis de los datos por municipio.
+- Se presenta un análisis de los datos por Colegio (Bogotá)
+
+
