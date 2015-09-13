@@ -25,7 +25,7 @@ Diseñar un método cuantitativo que permita asociar distintas nubes de puntos y
 
 ## Justificación
 
-Los datos del examen Saber11 son del orden de medio milón de registros; sin embargo se pueden agrupar en 1111 municipios o 11500 colegios. En ese orden de ideas no resulta viable obtener un modelo inferencial para cada uno de los subconjuntos (ccolegios, municipios), sin embargo es deseable poder hacerlo, ya que esto puede dar cuenta de cuáles son los mejores colegios (incentivos) y cuáles los peores municipios (prioridades). En el marco de políticas públicas para el desarrollo se necesitan herramientas de evaluación que faceiliten la medición del impacto, la identificación de prioridades y la estandarización de incentivos.
+Los datos del examen Saber11 son del orden de medio milón de registros; sin embargo se pueden agrupar en 1111 municipios o 11500 colegios. En ese orden de ideas no resulta viable obtener un modelo inferencial para cada uno de los subconjuntos (ccolegios, municipios), sin embargo es deseable poder hacerlo, ya que esto puede dar cuenta de cuáles son colegios con mejor desempeño (incentivos) y cuáles los municipios de resultados más bajos (prioridades). En el marco de políticas públicas para el desarrollo se necesitan herramientas de evaluación que faciiliten la medición del impacto, la identificación de prioridades y la estandarización de incentivos.
 
 ## Método de análisis
 
