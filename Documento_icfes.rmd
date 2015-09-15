@@ -1,11 +1,8 @@
 ---
-title: "Documento ICFES"
-output: html_document
+title: "Clasificación Estocástica de Áreas Pequeñas"
+author: Julian Cruz, Daniel Moreno, Adriana Clavijo
+output: pdf_document
 ---
-
-## Resumen
-
-Se plantea un método de clasificación estocástica basado en herramientas de minería de datos. El método es robusto, apto para grandes conjuntos de datos y modelamiento de áreas pequeñas, con características inferenciales. Además supera varios problemas de las pruebas de comparación múltiple y de los modelos paramétricos tradicionales. La aplicación a los datos del examen Saber 11 es inmediata, logrando obtener modelos prescriptivos a través del tiempo por municipio y, en el caso de Bogotá, por colegio.
 
 ## Planteamiento del problema de investigación
 
