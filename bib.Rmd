@@ -1,0 +1,23 @@
+---
+output: pdf_document
+---
+
+## Bibliografía
+
+1. J. Gibbons and S. Chakraborti. Nonparametric Statistical Inference. Marcel Dekker, New York, 2003.
+
+2. Lebart, L. and Morineau, A. and Piron, M. Statistique exploratoire multidimensionnelle: visualisations et inférences en fouille de données. Dunod, 2006.
+
+3. M. Friedman. The use of ranks to avoid the assumption of normality implicit in the analysis of variance. Journal of the American Statistical Association, 32:675 - 701, 1937.
+
+4. S. Carmer and M. Swanson. An evaluation of ten pairwise multiple comparison procedures by monte carlo methods. Journal of the American Statistical Association, 68:66 - 74, 1973.
+
+5. D. Duncan. Multiple range and multiple f tests. Biometrics, 11:1 - 42, 1955.
+
+6. O. Dunn. Multiple comparisons among means. Journal of the American Statistical Association, 56:52 - 64, 1961.
+
+7. C. Dunnet. A multiple comparison procedure for comparing several tratments with a control. Journal of the American Statistical Association, 50:1096 - 1121, 1955.
+
+8. J. M. Cruz. Algoritmos de agrupación en diseños de experimentos - Una propuesta no Paramétrica. XXIV Simposio Internacional de Estadística.
+
+9. R. Henderson and K. Clark. Architectural innovation: The reconfiguration of existing product technologies and the failure of established firms. Administrative Science Quarterly, 35:9 - 30, 1990.
