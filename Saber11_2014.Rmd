@@ -26,7 +26,10 @@ opts_chunk$set(
 ```
 
 ```{r data}
-load("./data/Saber11.RData")
+#load("./data/Saber11.RData")
+install.packages("devtools")
+devtools::install_github("nebulae-co/saber")
+library("saber")
 ```
 
 ```{r municipios}
