@@ -33,15 +33,22 @@ library("saber")
 ```
 
 ```{r municipios}
-Saber11 %<>% as.tbl %>%
-  filter(is.na(DISC_COGNITIVA) &        
-         DISC_CONDICION_ESPECIAL == "" & 
-         DIS_MOTRIZ == "" & 
-	       DISC_INVIDENTE == "" & 
-	       DISC_SORDO == "" & 
-         DISC_SDOWN == "" & 
-         DISC_AUTISMO == "" & 
-         TOTAL > 50) %>%
+data(SB11_20142)
+SB11_20142 %>% as.tbl %>% 
+  mutate(
+    TOTAL = (3 * LECTURA_CRITICA_PUNT +
+        3 * MATEMATICAS_PUNT + 
+        3 * SOCIALES_CIUDADANAS_PUNT + 
+        3 * CIENCIAS_NATURALES_PUNT + 
+        INGLES_PUNT) / 13) %>%
+  filter(is.na(DISC_COGNITIVA) & 
+      is.na(DISC_CONDICION_ESPECIAL) & 
+      is.na(DIS_MOTRIZ) & 
+      is.na(DISC_INVIDENTE) & 
+      is.na(DISC_SORDO) & 
+      is.na(DISC_SDOWN) & 
+      is.na(DISC_AUTISMO) & TOTAL > 10
+  ) %>%   
   transmute(Total = TOTAL,
             Lectura = LECTURA_CRITICA_PUNT,
             Mate = MATEMATICAS_PUNT,
@@ -50,10 +57,9 @@ Saber11 %<>% as.tbl %>%
             Ingles = INGLES_PUNT,
             Genero = PERS_GENERO,
             Estrato = as.ordered(FINS_ESTRATOVIVIENDAENERGIA),
-            Oficial = NATURALEZA,
-            Departamento = DEPARTAMENTO,
+            Departamento = DEPA_RESIDE,
             id_Municipio = sprintf("%05d", COD_MUNI_RESIDE),
-            Municipio = MUNI_RESIDE)
+            Municipio = MUNI_RESIDE) -> Saber11
 
 municipios_50 <- Saber11 %>%
   dplyr::group_by(id_Municipio) %>%
