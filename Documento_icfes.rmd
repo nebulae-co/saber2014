@@ -16,7 +16,9 @@ Organizar de manera óptima los recursos de la nación en el sector educativo es
 
 El uso de las más modernas herramientas estadísticas, como el algoritmo EP-Means, sobre las bases de datos del examen Saber 11 es una primera aproximación a la estratificación estandarizada de los municipios y los colegios.
 
-El estudio propuesto hace hincapié en las propiedades del algoritmo mencionado, lo implementa de forma sistemática, estandarizada y documentada y lo aplica sobre la base de datos del ICFES, mostrando resultados a nivel territorial (municipios) e institucional (colegios). Estos resultados consisten en grupos de municipios y grupos de colegios, que son interpretados de acuerdo al comportamiento de los puntajes de sus estudiantes en la prueba Saber 11 y expuestos mediante distintos métodos de visualización. A partir de la interpretación y visualización de estos grupos es posible identificar grupos específicos: colegios de alto nivel y municipios de intervención prioritaria. Los distintos productos del estudio son insumo de una discusión respecto a la idoneidad de la técnica, a su utilidad en términos de política pública y su utilización con el fin de organizar incentivos e intervenciones en el ámbito educativo nacional.
+El estudio propuesto hace hincapié en las propiedades del algoritmo mencionado, lo implementa de forma sistemática, estandarizada y documentada y lo aplica sobre las bases de datos del ICFES de 2005 a 2014, que contienen aproximadamente 4 millones de datos, mostrando resultados anuales a nivel territorial (municipios) e institucional (colegios). Estos resultados consisten en grupos de municipios y grupos de colegios, que son interpretados de acuerdo al comportamiento de los puntajes de sus estudiantes en la prueba Saber 11 y expuestos mediante distintos métodos de visualización.
+
+Procesos optimizados de interpretación y visualización de estos grupos facilitan la identificación de comportamientos específicos: colegios de alto nivel y municipios de intervención prioritaria. Los distintos productos del estudio son insumo de una discusión respecto a la idoneidad de la técnica, a su utilidad en términos de política pública y su utilización con el fin de organizar incentivos e intervenciones en el ámbito educativo nacional.
 
 # Justificación del problema, preguntas de investigación y objetivos
 
@@ -108,7 +110,7 @@ Además del ejercicio de investigación y el valor académico generado, se prese
 
  - Modelo de estratificación para municipios y para colegios, implementación y código en R.
 
- - Un paquete de R donde se encuentran los datos depurados de las pruebas Saber 11 y Saber Pro. Organiza de manera sistemática más de 5 millones de datos, facilitando su manejo y análisis. Garantiza el acceso a los datos del ICFES a la comunidad académica internacional.
+ - Un paquete de R donde se encuentran los datos depurados de las pruebas Saber 11 y Saber Pro que organiza de manera sistemática más de 5 millones de datos, facilitando su manejo y análisis y garantiza el acceso a los datos del ICFES a la comunidad académica internacional.
 
  - Un paquete de R donde donde se encuentra implementadas todas las técnicas usadas en el transcurso de la investigación.
 
