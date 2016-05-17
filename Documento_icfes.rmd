@@ -1,46 +1,113 @@
 ---
-title: "Clasificación Estocástica de Áreas Pequeñas"
-author: Julian Cruz, Daniel Moreno, Adriana Clavijo
-output: pdf_document
+title: "Propuesta de estratificación de municipios y colegios"
+author: Julian Cruz
+output: 
+  pdf_document:
+    keep_tex:
+      true
+    number_sections: true
+bibliography: Biblio.bib
+csl: apa.csl
 ---
 
-## Planteamiento del problema de investigación
+# Resumen de la propuesta
 
-El principal fin de la recolección de datos sobre rendimiento escolar es la evaluación del impacto de las políticas públicas en educación a nivel nacional y su retroalimentación para la toma de nuevas decisiones.
+Organizar de manera óptima los recursos de la nación en el sector educativo es una tarea que requiere información precisa sobre el estado actual de las instiruciones y de los distintos territorios que la conforman. La estratificación estandarizada de municipios y colegios a partir de sus resultados en las pruebas saber es una tarea difícil pero con un potencial enorme en cuanto a identificación de condiciones particulares y apoyo en política publica estatal.
 
-En este sentido, resulta fundamental definir y ajustar modelos de áreas pequeñas (e.g. colegios, municipios) que den cuenta de las diferencias y comportamientos en cuanto al rendimiento escolar para poder diseñar políticas públicas efectivas. 
+El uso de las más modernas herramientas estadísticas, como el algoritmo EP-Means, sobre la base de datos del examen Saber 11 es una primera aproximación a la estratificación estandarizada de los municipios y los colegios.
+
+El estudio propuesto hace hincapié en las propiedades del algoritmo mencionado, lo implementa de forma sistemática, estandarizada y documentada y lo aplica sobre la base de datos del ICFES, mostrando resultados a nivel territorial (municipios) e institucional (colegios). Estos resultados consisten en grupos de municipios y grupos de colegios, que son interpretados deacuerdo al comportamiento de los puntajes de sus estudiantes en la prueba Saber 11 y expuestos mediante distintos métodos de visualización. A partir de la interpretación y visualización de estos grupos es posible identificar grupos específicos: colegios de alto nivel y municipios de intervención prioritaria. Los distintos productos del estudio son insumo de una discusión respecto a la idoneidad de la técnica, a su utilidad en términos de política pública y su utilización con el fin de organizar incentivos e intervenciones en el ámbito educativo nacional.
+
+# Justificación del problema, preguntas de investigación y objetivos
+
+## Justificación
+
+El Instituto Colombiano para la Evaluación de la Educacaión ICFES pone a disposición de investigadores las bases de datos de resultados de las pruebas Saber 11 y Saber Pro. Estas pruebas se han posicionado como los principales mecanismos de medición del desempeño educativo tanto para los planteles educativos como para los estudiantes: los puntajes de la prueba Saber 11 a nivel individual son usados como estándar para el ingreso a universidades y dan fundamento al programa Ser Pilo Paga, así mismo los de la prueba Saber Pro son usados en asignación de becas de maestría y doctorado; a nivel institucional es posible ver como planteles educativos con calificación alta en las pruebas Saber 11 son preferidos por padres de familia para la educación de sus hijos y las universidades con mejores puntajes en la prueba Saber Pro publican sus logros con orgullo cada año.
+
+No obstante, el principal fin de la recolección de datos sobre rendimiento escolar es la evaluación del impacto de las políticas públicas en educación a nivel nacional y su retroalimentación para la toma de nuevas decisiones. La intervención directa de los resultados de las pruebas en política pública se puede observar en bastantes escenarios, por ejemplo el programa Ser Pilo Paga o el proyecto de Restaurantes Escolares en Medellín.
+
+Las bases de datos están conformadas por registros que corresponden a estudiantes divididos en distintos conlgomerados (e.g. colegios, universidades, municipios). En este sentido, resulta fundamental definir y ajustar modelos jerárquicos, de áreas pequeñas y de agregación, que reporten de las diferencias y comportamientos de los distintos conglomerados en cuanto al rendimiento escolar para poder diseñar intervenciones y políticas públicas efectivas. Se busca identificar conglomerados de intervención prioritaria, cuyos resultados justifiquen mayores esfuerzos en educación; y conglomerados de alto nivel, lo que facilita la asignación de estímulos, retroalimentación y definición, en términos educativos, de nortes (sures) a los que se quiere llegar.
 
 ## Objetivos
 
 ### General
 
-Profundizar en las herramientas estadísticas diseñadas para el modelamiento de áreas pequeñas y proponer una perspectiva alterna que supere las dificultades actuales preservando propiedades deseables.
+Obtener una estratificación de municipios y colegios a partir de la distribución de los puntajes de sus estudiantes.
 
 ### Específicos
 
-- Diseñar un método cuantitativo que permita asociar distintas nubes de puntos y estandarizar el modelamiento estocástico en áreas pequeñas.
-- Integrar los elementos estocásticos de manera natural manteniendo al mínimo los supuestos distribucionales.
-- Implementar el método propuesto con los datos de las pruebas Saber 11 y dar cuenta de las diferencias y comportamientos.
+- Clasificar los colegios del distrito de manera que sea posible identificar planteles de intervención prioritaria y planteles de alto nivel.
+ 
+- Clasificar los municipios de manera que sea posible identificar municipios de intervención prioritaria y municipios de alto nivel.
 
-## Justificación
+# Marco teórico
 
-Los datos del examen Saber 11 son del orden de medio millón de registros por año; sin embargo se pueden desagregar en 1111 municipios o 11500 colegios. En ese orden de ideas no resulta viable obtener un modelo inferencial para cada uno de los subconjuntos (colegios, municipios) o implementar métodos de comparación directa, sin embargo es deseable ya que ésto da cuenta de cuáles son los colegios con mejor desempeño (incentivos) y cuáles los municipios de resultados más bajos (prioridades). En el marco de políticas públicas para el desarrollo se necesitan herramientas de evaluación que faciliten la identificación de prioridades, la asignación de incentivos y los mecanismos para evaluación de impacto.
+El desarrollo tecnológico de los últimos 20 años ha cambiado por completo los conceptos y procesos de análisis de la información. El aumento de la capacidad computacional conlleva la aparición de algoritmos y técnicas que, exigiendo mucho más sobre la máquina, permiten extraer información más precisa y útil. De manera simultánea estos desarrollos han conducido a la gestión y almacenamiento de grandes conjuntos de datos; conjuntos cuyo procesamiento y análisis presentan retos en términos estadísticos. Esto ha impulsado el estudio y desarrollo de diversas metodogías y herramientas analíticas, entre ellas se encuentra la Función Empírica de Densidad Acumulada (FEDA), cuyo estudio es el eje central de la propuesta.
 
-## Método de análisis
+El algoritmo EP-Means [@EPMEANS], cuyo documento se adjunta, es una nueva técnica que aplica el algoritmo K-Means [@HARTIGAN] sobre funciones empíricas de distribución acumulada. Para esto hace uso de la distancia Earth Mover's [@emd] entre estas funciones. El desarrollo desemboca en un algoritmo eficiente, empírico, no paramétrico y basado en distancias.
 
-A partir del teorema de Glivenko-Cantelli se tiene que, si dos funciones de distribución son iguales, la distancia entre sus cuantiles muestrales disminuye a medida que la muestra crece.
+Una idea bastante parecida fue presentada por @Barrera2014, en esta propuesta se suavizan las distribuciones acumuladas estimadas e implementan herramientas diseñadas para datos funcionales. El artículo propone un método de agrupamiento jerárquico para funciones de densidad considerándolas datos funcionales. Para la implementación se representan en forma discreta de las funciones de densidad de probabilidad, posteriormente se usa la distancia de Hellinger con el fin de medir las distancias entre todas las curvas, y a su vez, se construye una estructura de agrupamiento jerárquico.
 
-Se aplica un algoritmo de clasificación mixto que optimiza la relación de varianzas entre grupos de áreas pequeñas haciendo uso de la distancia entre las funciones de distribución ajustadas. De esta manera se identifican patrones y se diferencian los principales comportamientos observados.  
+La idea de agrupar los datos a partir de su distribución es planteada por @Applegate2011, que aplica K-Means sobre histogramas multivariadoss. No obstante el número de clases de los histogramas incide sobre los resultados. El uso de funciones empíricas resuelve esto, en @EPMEANS se desarrolla únicamente el caso univariado, dejando el multivariado para trabajo futuro.
 
-La validación se basa en el uso de herramientas no paramétricas. Una parametrización distribucional opcional permite resumir el comportamiento estocástico obteniendo modelos inferenciales por colegios y por municipios.
+Dada una muestra aleatoria $X_i$, la Función Empírica de Densidad Acumulada (FEDA) se define de la siguiente manera:
 
-## Fuente de los datos
+\[\widehat{f}(x) = \frac{1}{n} \sum_{i = 1}^n I_{(-\infty, x]}(X_i)\]
 
-El Instituto Colombiano para la Evaluación de la Educación ICFES pone a disposición de investigadores las bases de datos de resultados de las pruebas Saber 11 y Saber Pro.
+Se trata de una función escalonada que aumenta en $\frac{1}{n}$ en cada uno de los puntos de la muestra. El teorema de Glivenko Cantelli garantiza que esta función converge puntualmente con probabilidad 1 a la función de densidad acumulada de $X$. En consecuencia la FEDA es un estimador de la función de densidad acumulada asociada a $X$. El tamaño de los escalones es $\frac{1}{n}$, sin embargo es posible reemplazarlo por los pesos muestrales $a_i$ desde que todos sean positivos y su suma sea igual a 1.
 
-Las condiciones de acceso a los datos se pueden consultar [aquí](http://www.icfes.gov.co/investigacion/acceso-a-bases-de-datos)
+En este contexto un conjunto de puntos es representado completamente por una curva. En consecuencia es posible representar una colección de conjuntos de puntos usando una colección de curvas. EP-Means aplica algoritmos de agrupación a estas curvas separándolas en un número dado de grupos de curvas similares entre sí. De esta manera es posible afirmar que EP-Means es un algoritmo de agrupación asintótica no paramétrico aplicable en grandes conjuntos de datos y tiene por objetivo encontrar una estructura de agrupación basada en la forma distribucional empírica dada por los datos. Este trabajo tiene aplicación en varios problemas estadísticos  que se mostrarán durante el desarrollo del estudio, uno de estos es la comparación de muestras de varias distribuciones.
 
-## Principales resultados
+@Aponte2012 aborda en su disertación de maestría el problema de comparación de muestras de varias distribuciones. Dado un número determinado de muestras, el problema consiste en encontrar diferencias distribucionales entre ellas. En respuesta a este problema existen pruebas estadísticas como ANOVA [@Montgomery2004], Kruskall Wallis [@KWTEST], Friedman [@Friedman1937], amén de un largo número de procedimientos de comparaciones mútiples [@CARSWA].
 
-- Se presenta el método propuesto.
-- Se presenta un análisis de los datos por municipio y en el caso de Bogotá por colegio.
+Las herramientas actuales hacen posible establecer cuándo una distribución presenta valores significativamente distintos a otra, sin embargo poseen inconvenientes en cuanto a interpretabilidad y visualización. La construcción de modelos estadísticos de tipo inferencial tiene en general supuestos distribucionales que en muchas ocasiones no permiten una conceptualización nítida del comportamiento global de los datos. Un resultado usual en este ambito es $\mu_i = \mu_j$, $\mu_j = \mu_k$ y $\mu_i \neq \mu_k$. Esto sucede porque el error tipo I aumenta al aumentar el número de pruebas; en respuesta se amplían los intervalos de confianza llegando así a colnclusiones contraintuitivas.
+
+El algoritmo EP-Means permite agrupar conglomerados deacuerdo a la distribución de sus elementos. Haciendo uso de la FEDA de cada conglomerado y aplicando el algoritmo K-Means crea un método robusto de agregación estocástica que estratifica los conglomerados sin hacer uso de estimadores, parámetros ni supuestos distribucionales.
+
+# Metodología
+
+## Descripción de la base de datos
+
+Se usará la base de datos de la prueba Saber 11 del segundo semestre del año 2014. En esta se tiene el puntaje de cada individuo en cada área, su colegio y su municipio.
+
+## Descripción del plan de análisis
+
+### Preparación de los datos
+
+El estudio analiza el puntaje total en la prueba Saber 11 de los estudiantes que aparecen en la base de datos. Los estudiantes que presentan algún tipo de discapacidad y auellos que presentan un puntaje inusualmente bajo son retirados, los primeros se retiran conociendo las implicaciones sociales y estadísticas que conlleva realizar conclusiones sobre poblaciones porcentualmente reducidas; los segundos no reflejan un puntaje debido a la presentación de la prueba: personas que responden deliberadamente mal, que presentan el examen con afán o cuyas respuestas son erróneas por razones desconocidas.
+
+### Aplicación del algoritmo EP-Means
+
+Estos son los procedimientos a realizar sobre la base de datos depurada:
+
+ - Se calcula la FEDA por municipio.
+
+ - Para los estudiantes en Bogotá se calcula la FEDA por colegio.
+
+ - Se construyen sendas tablas, una para municipios y otra para colegios. En cada tabla se expresa la FEDA como combinación lineal de funciones simples.
+
+ - Se aplica el algoritmo K-Means a estas tablas obteniendo agrupaciones de municipuos y agrupaciones de colegios. Este proceso se realiza varias veces con el fin de escoger un número óptimo de estratos.
+
+ - Se realiza un ACP a ambas tablas con el fin de obtener una visualización óptima de los municipios y de los colegios.
+
+ - Se diseñan otras visualizaciones que muestren los distintos grupos y su comportamiento.
+
+## Recopilación y documentación
+
+La propuesta comprende una etapa de documentación, estandarización y recopilación del código usado para obtener los resultados, con este código es posible organizar dos paquetes de R, uno de datos y otro algorítmico, cono los cuales será posible replicar el estudio en adelante.
+
+## Subproductos del estudio
+
+Además del ejercicio de investigación y el valor académico generado, se presentan algunos productos que agregan valor a la propuesta:
+
+ - Estratificación de los municipios según la distribución de puntajes de sus estudiantes en la prueba Saber 11.
+
+ - Estratificación de los planteles educativos en la ciudad de Bogotá según la distribución de puntajes de sus estudiantes en la prueba Saber 11.
+
+ - Modelo de estratificación para municipios y para colegios, implementación y código en R.
+
+ - Saber, un paquete de R donde se encuentran los datos depurados de las pruebas Saber 11 y Saber Pro. Garantiza el acceso a los datos del ICFES a la comunidad académica internacional.
+
+ - Un paquete de R donde donde se encuentra implementadas todas las técnicas usadas en el transcurso de la investigación.
+
+# Bibliografía
