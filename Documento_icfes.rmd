@@ -12,17 +12,17 @@ csl: apa.csl
 
 # Resumen de la propuesta
 
-Organizar de manera óptima los recursos de la nación en el sector educativo es una tarea que requiere información precisa sobre el estado actual de las instiruciones y de los distintos territorios que la conforman. La estratificación estandarizada de municipios y colegios a partir de sus resultados en las pruebas saber es una tarea difícil pero con un potencial enorme en cuanto a identificación de condiciones particulares y apoyo en política publica estatal.
+Organizar de manera óptima los recursos de la nación en el sector educativo es una tarea que requiere información precisa sobre el estado actual de las instituciones y de los distintos territorios que la conforman. La estratificación estandarizada de municipios y colegios a partir de sus resultados en las pruebas saber es una tarea difícil pero con un potencial enorme en cuanto a identificación de condiciones particulares y apoyo en política publica estatal.
 
-El uso de las más modernas herramientas estadísticas, como el algoritmo EP-Means, sobre la base de datos del examen Saber 11 es una primera aproximación a la estratificación estandarizada de los municipios y los colegios.
+El uso de las más modernas herramientas estadísticas, como el algoritmo EP-Means, sobre las bases de datos del examen Saber 11 es una primera aproximación a la estratificación estandarizada de los municipios y los colegios.
 
-El estudio propuesto hace hincapié en las propiedades del algoritmo mencionado, lo implementa de forma sistemática, estandarizada y documentada y lo aplica sobre la base de datos del ICFES, mostrando resultados a nivel territorial (municipios) e institucional (colegios). Estos resultados consisten en grupos de municipios y grupos de colegios, que son interpretados deacuerdo al comportamiento de los puntajes de sus estudiantes en la prueba Saber 11 y expuestos mediante distintos métodos de visualización. A partir de la interpretación y visualización de estos grupos es posible identificar grupos específicos: colegios de alto nivel y municipios de intervención prioritaria. Los distintos productos del estudio son insumo de una discusión respecto a la idoneidad de la técnica, a su utilidad en términos de política pública y su utilización con el fin de organizar incentivos e intervenciones en el ámbito educativo nacional.
+El estudio propuesto hace hincapié en las propiedades del algoritmo mencionado, lo implementa de forma sistemática, estandarizada y documentada y lo aplica sobre la base de datos del ICFES, mostrando resultados a nivel territorial (municipios) e institucional (colegios). Estos resultados consisten en grupos de municipios y grupos de colegios, que son interpretados de acuerdo al comportamiento de los puntajes de sus estudiantes en la prueba Saber 11 y expuestos mediante distintos métodos de visualización. A partir de la interpretación y visualización de estos grupos es posible identificar grupos específicos: colegios de alto nivel y municipios de intervención prioritaria. Los distintos productos del estudio son insumo de una discusión respecto a la idoneidad de la técnica, a su utilidad en términos de política pública y su utilización con el fin de organizar incentivos e intervenciones en el ámbito educativo nacional.
 
 # Justificación del problema, preguntas de investigación y objetivos
 
 ## Justificación
 
-El Instituto Colombiano para la Evaluación de la Educacaión ICFES pone a disposición de investigadores las bases de datos de resultados de las pruebas Saber 11 y Saber Pro. Estas pruebas se han posicionado como los principales mecanismos de medición del desempeño educativo tanto para los planteles educativos como para los estudiantes: los puntajes de la prueba Saber 11 a nivel individual son usados como estándar para el ingreso a universidades y dan fundamento al programa Ser Pilo Paga, así mismo los de la prueba Saber Pro son usados en asignación de becas de maestría y doctorado; a nivel institucional es posible ver como planteles educativos con calificación alta en las pruebas Saber 11 son preferidos por padres de familia para la educación de sus hijos y las universidades con mejores puntajes en la prueba Saber Pro publican sus logros con orgullo cada año.
+El Instituto Colombiano para la Evaluación de la Educación ICFES pone a disposición de investigadores las bases de datos de resultados de las pruebas Saber 11 y Saber Pro. Estas pruebas se han posicionado como los principales mecanismos de medición del desempeño educativo tanto para los planteles educativos como para los estudiantes: los puntajes de la prueba Saber 11 a nivel individual son usados como estándar para el ingreso a universidades y dan fundamento al programa Ser Pilo Paga, así mismo los de la prueba Saber Pro son usados en asignación de becas de maestría y doctorado; a nivel institucional es posible ver como planteles educativos con calificación alta en las pruebas Saber 11 son preferidos por padres de familia para la educación de sus hijos y las universidades con mejores puntajes en la prueba Saber Pro publican sus logros con orgullo cada año.
 
 No obstante, el principal fin de la recolección de datos sobre rendimiento escolar es la evaluación del impacto de las políticas públicas en educación a nivel nacional y su retroalimentación para la toma de nuevas decisiones. La intervención directa de los resultados de las pruebas en política pública se puede observar en bastantes escenarios, por ejemplo el programa Ser Pilo Paga o el proyecto de Restaurantes Escolares en Medellín.
 
@@ -42,13 +42,13 @@ Obtener una estratificación de municipios y colegios a partir de la distribuci�
 
 # Marco teórico
 
-El desarrollo tecnológico de los últimos 20 años ha cambiado por completo los conceptos y procesos de análisis de la información. El aumento de la capacidad computacional conlleva la aparición de algoritmos y técnicas que, exigiendo mucho más sobre la máquina, permiten extraer información más precisa y útil. De manera simultánea estos desarrollos han conducido a la gestión y almacenamiento de grandes conjuntos de datos; conjuntos cuyo procesamiento y análisis presentan retos en términos estadísticos. Esto ha impulsado el estudio y desarrollo de diversas metodogías y herramientas analíticas, entre ellas se encuentra la Función Empírica de Densidad Acumulada (FEDA), cuyo estudio es el eje central de la propuesta.
+El desarrollo tecnológico de los últimos 20 años ha cambiado por completo los conceptos y procesos de análisis de la información. El aumento de la capacidad computacional conlleva la aparición de algoritmos y técnicas que, exigiendo mucho más sobre la máquina, permiten extraer información más precisa y útil. De manera simultánea estos desarrollos han conducido a la gestión y almacenamiento de grandes conjuntos de datos; conjuntos cuyo procesamiento y análisis presentan retos en términos estadísticos. Esto ha impulsado el estudio y desarrollo de diversas metodologías y herramientas analíticas, entre ellas se encuentra la Función Empírica de Densidad Acumulada (FEDA), cuyo estudio es el eje central de la propuesta.
 
 El algoritmo EP-Means [@EPMEANS], cuyo documento se adjunta, es una nueva técnica que aplica el algoritmo K-Means [@HARTIGAN] sobre funciones empíricas de distribución acumulada. Para esto hace uso de la distancia Earth Mover's [@emd] entre estas funciones. El desarrollo desemboca en un algoritmo eficiente, empírico, no paramétrico y basado en distancias.
 
 Una idea bastante parecida fue presentada por @Barrera2014, en esta propuesta se suavizan las distribuciones acumuladas estimadas e implementan herramientas diseñadas para datos funcionales. El artículo propone un método de agrupamiento jerárquico para funciones de densidad considerándolas datos funcionales. Para la implementación se representan en forma discreta de las funciones de densidad de probabilidad, posteriormente se usa la distancia de Hellinger con el fin de medir las distancias entre todas las curvas, y a su vez, se construye una estructura de agrupamiento jerárquico.
 
-La idea de agrupar los datos a partir de su distribución es planteada por @Applegate2011, que aplica K-Means sobre histogramas multivariadoss. No obstante el número de clases de los histogramas incide sobre los resultados. El uso de funciones empíricas resuelve esto, en @EPMEANS se desarrolla únicamente el caso univariado, dejando el multivariado para trabajo futuro.
+La idea de agrupar los datos a partir de su distribución es planteada por @Applegate2011, que aplica K-Means sobre histogramas multivariados. No obstante el número de clases de los histogramas incide sobre los resultados. El uso de funciones empíricas resuelve esto, en @EPMEANS se desarrolla únicamente el caso univariado, dejando el multivariado para trabajo futuro.
 
 Dada una muestra aleatoria $X_i$, la Función Empírica de Densidad Acumulada (FEDA) se define de la siguiente manera:
 
@@ -62,23 +62,25 @@ En este contexto un conjunto de puntos es representado completamente por una cur
 
 Las herramientas actuales hacen posible establecer cuándo una distribución presenta valores significativamente distintos a otra, sin embargo poseen inconvenientes en cuanto a interpretabilidad y visualización. La construcción de modelos estadísticos de tipo inferencial tiene en general supuestos distribucionales que en muchas ocasiones no permiten una conceptualización nítida del comportamiento global de los datos. Un resultado usual en este ambito es $\mu_i = \mu_j$, $\mu_j = \mu_k$ y $\mu_i \neq \mu_k$. Esto sucede porque el error tipo I aumenta al aumentar el número de pruebas; en respuesta se amplían los intervalos de confianza llegando así a colnclusiones contraintuitivas.
 
-El algoritmo EP-Means permite agrupar conglomerados deacuerdo a la distribución de sus elementos. Haciendo uso de la FEDA de cada conglomerado y aplicando el algoritmo K-Means crea un método robusto de agregación estocástica que estratifica los conglomerados sin hacer uso de estimadores, parámetros ni supuestos distribucionales.
+El algoritmo EP-Means permite agrupar conglomerados de acuerdo a la distribución de sus elementos. Haciendo uso de la FEDA de cada conglomerado y aplicando el algoritmo K-Means crea un método robusto de agregación estocástica que estratifica los conglomerados sin hacer uso de estimadores, parámetros ni supuestos distribucionales.
 
 # Metodología
 
 ## Descripción de la base de datos
 
-Se usará la base de datos de la prueba Saber 11 del segundo semestre del año 2014. En esta se tiene el puntaje de cada individuo en cada área, su colegio y su municipio.
+Se usarán las bases de datos de la prueba Saber 11 del segundo semestre del cada año desde 2005 hasta 2014; dejando de lado el calendario B: una población diferente con condiciones educativas distintas que representa aproximadamente el 10% (50000 estudiantes al año aproximadamente) del total de estudiantes evaluados del país. En estas se tiene el puntaje de cada individuo en cada área, su colegio y su municipio. El algoritmo se aplica a cada base de datos obteniendo clasificaciones de municipios y de colegios para cada año. Esto permite evaluar la robustez del algoritmo y revela la evolución del panorama educativo en el país durante la última década. 
+
+El número de estudiantes en cada bases de datos está entre 350000 y 600000, lo cual indica que el análisis de una década de información puede sobrepasar fácilmente los 4 millones de datos. En consecuencia resulta totalmente pertinente organizar los datos en un paquete de R para facilitar el manejo y la operatividad de estos grandes volúmenes.
 
 ## Descripción del plan de análisis
 
 ### Preparación de los datos
 
-El estudio analiza el puntaje total en la prueba Saber 11 de los estudiantes que aparecen en la base de datos. Los estudiantes que presentan algún tipo de discapacidad y auellos que presentan un puntaje inusualmente bajo son retirados, los primeros se retiran conociendo las implicaciones sociales y estadísticas que conlleva realizar conclusiones sobre poblaciones porcentualmente reducidas; los segundos no reflejan un puntaje debido a la presentación de la prueba: personas que responden deliberadamente mal, que presentan el examen con afán o cuyas respuestas son erróneas por razones desconocidas.
+El estudio analiza el puntaje total en la prueba Saber 11 de los estudiantes que aparecen en la base de datos. Los estudiantes con distintas capacidades (condición de discapacidad, en la base de datos) y aquellos que presentan un puntaje inusualmente bajo son retirados: los primeros se retiran conociendo las implicaciones sociales y estadísticas que conlleva realizar conclusiones sobre poblaciones porcentualmente reducidas; el puntaje de los segundos no refleja la presentación de la prueba: personas que responden deliberadamente mal, que presentan el examen con afán o cuyas respuestas son erróneas por razones desconocidas.
 
 ### Aplicación del algoritmo EP-Means
 
-Estos son los procedimientos a realizar sobre la base de datos depurada:
+Estos son los procedimientos a realizar sobre cada base de datos depurada:
 
  - Se calcula la FEDA por municipio.
 
@@ -86,7 +88,7 @@ Estos son los procedimientos a realizar sobre la base de datos depurada:
 
  - Se construyen sendas tablas, una para municipios y otra para colegios. En cada tabla se expresa la FEDA como combinación lineal de funciones simples.
 
- - Se aplica el algoritmo K-Means a estas tablas obteniendo agrupaciones de municipuos y agrupaciones de colegios. Este proceso se realiza varias veces con el fin de escoger un número óptimo de estratos.
+ - Se aplica el algoritmo K-Means a estas tablas obteniendo agrupaciones de municipios y agrupaciones de colegios. Este proceso se realiza varias veces con el fin de escoger un número óptimo de estratos.
 
  - Se realiza un ACP a ambas tablas con el fin de obtener una visualización óptima de los municipios y de los colegios.
 
@@ -106,7 +108,7 @@ Además del ejercicio de investigación y el valor académico generado, se prese
 
  - Modelo de estratificación para municipios y para colegios, implementación y código en R.
 
- - Saber, un paquete de R donde se encuentran los datos depurados de las pruebas Saber 11 y Saber Pro. Garantiza el acceso a los datos del ICFES a la comunidad académica internacional.
+ - Un paquete de R donde se encuentran los datos depurados de las pruebas Saber 11 y Saber Pro. Organiza de manera sistemática más de 5 millones de datos, facilitando su manejo y análisis. Garantiza el acceso a los datos del ICFES a la comunidad académica internacional.
 
  - Un paquete de R donde donde se encuentra implementadas todas las técnicas usadas en el transcurso de la investigación.
 
