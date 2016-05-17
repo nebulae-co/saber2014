@@ -5,3 +5,4 @@ data/*.gz
 .Rproj.user
 *.html
 *.pdf
+*.tex
